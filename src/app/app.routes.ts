@@ -9,7 +9,8 @@ export const routes: Routes = [
     path: '',
     component: PublicLayoutComponent,
     children: [
-      { path: '', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) }
+      { path: '', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
+      { path: 'login', loadChildren: () => import('./core/auth/auth.module').then(m => m.AuthModule) }
     ]
   },
   {
