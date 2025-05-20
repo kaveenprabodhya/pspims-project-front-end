@@ -1,1 +1,23 @@
-<p>copra-sale-list works!</p>
+<app-table
+  [headers]="[
+    'Sale Quantity',
+    'Price per Quantity',
+    'Total Sale Amount',
+    'Sale Date',
+    'Customer',
+    'Shipping Plan',
+    'Payment Status'
+  ]"
+  [keys]="[
+    'saleQuantity',
+    'pricePerQuantity',
+    'totalSaleAmount',
+    'saleDate',
+    'customer.name',
+    'shippingPlan.planCode',
+    'paymentDetails.status'
+  ]"
+  [data]="copraSales"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

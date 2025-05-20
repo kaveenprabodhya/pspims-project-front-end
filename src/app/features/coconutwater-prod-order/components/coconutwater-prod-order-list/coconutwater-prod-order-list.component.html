@@ -1,1 +1,13 @@
-<p>coconutwater-prod-order-list works!</p>
+<app-table
+  [headers]="['Order Code', 'Quantity', 'Unit', 'Start Date', 'End Date']"
+  [keys]="[
+    'prodOrderDetails.orderCode',
+    'prodOrderDetails.quantity',
+    'prodOrderDetails.unit',
+    'prodOrderDetails.startDate',
+    'prodOrderDetails.endDate'
+  ]"
+  [data]="coconutWaterProdOrders"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

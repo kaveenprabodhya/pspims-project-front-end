@@ -1,1 +1,32 @@
-<p>beverage-type-form works!</p>
+<div class="container mt-4">
+    <h4 class="mb-3">Beverage Type Form</h4>
+    <form (ngSubmit)="onSubmit()" #beverageForm="ngForm">
+      
+      <!-- Beverage Name -->
+      <div class="mb-3">
+        <label for="beverageName" class="form-label">Beverage Name</label>
+        <input type="text" class="form-control" id="beverageName" name="beverageName" [(ngModel)]="beverageType.beverageName" required>
+      </div>
+  
+      <!-- Beverage Description -->
+      <div class="mb-3">
+        <label for="beverageDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="beverageDescription" name="beverageDescription" rows="3" [(ngModel)]="beverageType.beverageDescription"></textarea>
+      </div>
+  
+      <!-- Is Active -->
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="isActive" name="isActive" [(ngModel)]="beverageType.isActive">
+        <label class="form-check-label" for="isActive">Is Active</label>
+      </div>
+  
+      <!-- Nutrition Info -->
+      <div class="mb-3">
+        <label for="nutritionInfo" class="form-label">Nutrition Info</label>
+        <textarea class="form-control" id="nutritionInfo" name="nutritionInfo" rows="2" [(ngModel)]="beverageType.nutritionInfo"></textarea>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="beverageForm.invalid">Submit</button>
+    </form>
+  </div>
+  

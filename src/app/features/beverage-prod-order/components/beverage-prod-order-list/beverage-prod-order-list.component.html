@@ -1,1 +1,7 @@
-<p>beverage-prod-order-list works!</p>
+<app-table
+  [headers]="['Production Order ID', 'Beverage Type']"
+  [keys]="['prodOrderDetails.id', 'beverageType.name']"
+  [data]="beverageProdOrders"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

@@ -1,1 +1,23 @@
-<p>coconut-purchase-list works!</p>
+<app-table
+  [headers]="[
+    'Quantity',
+    'Price/Unit',
+    'Total Cost',
+    'Purchase Date',
+    'Quality Grade',
+    'Inventory',
+    'Supplier'
+  ]"
+  [keys]="[
+    'purchaseQuantity',
+    'pricePerUnit',
+    'totalPurchaseCost',
+    'purchaseDate',
+    'coconutQualityGrade',
+    'inventory.name', 
+    'supplier.name' 
+  ]"
+  [data]="coconutPurchases"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

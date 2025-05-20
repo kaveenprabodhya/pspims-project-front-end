@@ -1,1 +1,67 @@
-<p>agent-form works!</p>
+<div class="container mb-3 border rounded-1 p-4">
+    <h4 class="mb-3">Agent Registration</h4>
+    <form>
+      <!-- Personal Information -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="firstName" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required>
+        </div>
+        <div class="col-md-6">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+      </div>
+  
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input type="text" class="form-control" id="address" placeholder="Enter address">
+      </div>
+  
+      <!-- Account Info -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Choose a username" required>
+        </div>
+        <div class="col-md-6">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+        </div>
+      </div>
+  
+      <!-- Role -->
+      <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <select class="form-select" id="role" required>
+          <option value="" disabled selected>Select role</option>
+          <option value="ROLE_AGENT">ROLE_AGENT</option>
+          <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+          <!-- Add more if needed -->
+        </select>
+      </div>
+  
+      <!-- Department -->
+      <div class="mb-3">
+        <label for="agentDepartment" class="form-label">Department</label>
+        <select class="form-select" id="agentDepartment">
+          <option value="" disabled selected>Select department</option>
+          <option value="SALES">SALES</option>
+          <option value="SUPPORT">SUPPORT</option>
+          <option value="LOGISTICS">LOGISTICS</option>
+          <!-- Add more enums as needed -->
+        </select>
+      </div>
+  
+      <!-- Submit -->
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+  

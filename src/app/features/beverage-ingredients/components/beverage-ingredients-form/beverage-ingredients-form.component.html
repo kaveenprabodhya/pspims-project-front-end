@@ -1,1 +1,65 @@
-<p>beverage-ingredients-form works!</p>
+<h5 class="mb-3">Add New Ingredient</h5>
+
+<form #ingredientForm="ngForm" (ngSubmit)="onSubmit()" class="mt-3">
+  <div class="mb-3">
+    <label for="ingredientName" class="form-label">Ingredient Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="ingredientName"
+      name="ingredientName"
+      [(ngModel)]="ingredient.ingredientName"
+      placeholder="Enter name"
+      required
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="measureAmount" class="form-label">Measure Amount</label>
+    <input
+      type="number"
+      class="form-control"
+      id="measureAmount"
+      name="measureAmount"
+      [(ngModel)]="ingredient.measureAmount"
+      placeholder="Enter amount"
+      required
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="ingredientMeasure" class="form-label">Ingredient Measure</label>
+    <select
+      class="form-select"
+      id="ingredientMeasure"
+      name="ingredientMeasure"
+      [(ngModel)]="ingredient.ingredientMeasure"
+      required
+    >
+      <option value="" disabled selected>Select Measure</option>
+      <option value="GRAM">GRAM</option>
+      <option value="ML">ML</option>
+      <option value="LITER">LITER</option>
+      <option value="UNIT">UNIT</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="beverageType" class="form-label">Beverage Type</label>
+    <select
+      class="form-select"
+      id="beverageType"
+      name="beverageType"
+      [(ngModel)]="ingredient.beverageType"
+      required
+    >
+      <option [ngValue]="null" disabled>Select Beverage Type</option>
+      <option *ngFor="let type of beverageTypes" [value]="type.id">
+        {{ type.beverageName }}
+      </option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="ingredientForm.invalid">
+    Add Ingredient
+  </button>
+</form>

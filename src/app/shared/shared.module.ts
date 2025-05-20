@@ -5,6 +5,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TableComponent } from './components/table/table.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 
 
@@ -16,7 +17,8 @@ import { ToastComponent } from './components/toast/toast.component';
     NavbarComponent,
     SpinnerComponent,
     TableComponent,
-    ToastComponent
+    ToastComponent,
+    SidebarComponent
   ]
 })
 export class SharedModule { }

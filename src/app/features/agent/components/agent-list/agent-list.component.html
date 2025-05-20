@@ -1,1 +1,89 @@
-<p>agent-list works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <!-- Vertical Tabs -->
+    <div class="col-md-3 mb-3">
+      <div
+        class="nav flex-column nav-pills"
+        id="v-pills-tab"
+        role="tablist"
+        aria-orientation="vertical"
+      >
+        <button
+          class="nav-link active"
+          id="v-pills-users-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#v-pills-users"
+          type="button"
+          role="tab"
+          aria-controls="v-pills-users"
+          aria-selected="false"
+        >
+          All Users
+        </button>
+        <button
+          class="nav-link"
+          id="v-pills-form-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#v-pills-form"
+          type="button"
+          role="tab"
+          aria-controls="v-pills-form"
+          aria-selected="true"
+        >
+          Agent Form
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="col-md-9">
+      <div class="tab-content" id="v-pills-tabContent">
+        <!-- Agent Form Tab -->
+        <div
+          class="tab-pane fade"
+          id="v-pills-form"
+          role="tabpanel"
+          aria-labelledby="v-pills-form-tab"
+        >
+          <app-agent-form></app-agent-form>
+        </div>
+
+        <!-- Users Grid Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="v-pills-users"
+          role="tabpanel"
+          aria-labelledby="v-pills-users-tab"
+        >
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            <div class="col" *ngFor="let user of users">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                  <img
+                    [src]="user.imageUrl || 'https://via.placeholder.com/100'"
+                    class="rounded-circle mb-3"
+                    width="100"
+                    height="100"
+                    alt="User Image"
+                  />
+                  <h5 class="card-title mb-1">{{ user.name }}</h5>
+                  <p class="text-muted mb-2">{{ user.role }}</p>
+                  <p class="mb-0"><strong>Email:</strong> {{ user.email }}</p>
+                  <p><strong>Phone:</strong> {{ user.phone }}</p>
+                </div>
+                <div class="card-footer bg-white">
+                  <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                  <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                  <button class="btn btn-sm btn-outline-danger float-end">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Tab -->
+      </div>
+    </div>
+  </div>
+</div>

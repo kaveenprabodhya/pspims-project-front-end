@@ -1,1 +1,9 @@
-<p>beverage-ingredients-list works!</p>
+<h5>Beverage Ingredients</h5>
+
+<app-table
+  [headers]="['Name', 'Amount', 'Measure', 'Beverage Type']"
+  [keys]="['ingredientName', 'measureAmount', 'ingredientMeasure', 'beverageType.name']"
+  [data]="beverageIngredients"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>
