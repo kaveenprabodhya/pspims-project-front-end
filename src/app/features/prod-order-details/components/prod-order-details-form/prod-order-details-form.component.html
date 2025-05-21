@@ -1,1 +1,44 @@
-<p>prod-order-details-form works!</p>
+<div [formGroup]="group">
+    <div class="mb-3">
+      <label class="form-label">Production Date</label>
+      <input type="date" class="form-control" formControlName="prodDate" />
+    </div>
+  
+    <div class="row">
+      <div class="col">
+        <label class="form-label">Quantity</label>
+        <input type="number" class="form-control" formControlName="prodQuantity"  min="0"/>
+      </div>
+      <div class="col">
+        <label class="form-label">Price Per Unit</label>
+        <input type="number" class="form-control" formControlName="pricePerUnit" min="0" />
+      </div>
+    </div>
+  
+    <div class="mt-3">
+      <label class="form-label">Total Amount</label>
+      <input type="number" class="form-control" formControlName="totalAmount" min="0"/>
+    </div>
+  
+    <div class="mt-3">
+      <label class="form-label">Production Measure</label>
+      <select class="form-select" formControlName="productionQuantityMeasure">
+        <option disabled selected value="">Select Production Measure</option>
+        <option *ngFor="let option of ['LITERS', 'UNITS']" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  
+    <div class="mt-3">
+      <label class="form-label">Production Status</label>
+      <select class="form-select" formControlName="prodStatus">
+        <option disabled selected value="">Select Production Status</option>
+        <option *ngFor="let status of ['PENDING', 'IN_PROGRESS', 'COMPLETED']" [value]="status">
+          {{ status }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+  

@@ -1,21 +1,23 @@
+import { AgentDepartmentTypeEnum } from "../../../shared/enums/agent-department-type-enum";
+import { Role } from "../../../shared/enums/role-enum";
 import { Customer } from "../../customer/models/customer.model";
 import { Supplier } from "../../supplier/models/supplier.model";
 
 export interface Agent {
-    id: string;
-    version: number;
-    createdDate: string;
-    lastModifiedDate: string;
+    id?: string;
+    version?: number;
+    createdDate?: string;
+    lastModifiedDate?: string;
     firstName: string;
     lastName: string;
     email: string;
     address: string;
     username: string;
     password: string;
-    role: 'ROLE_AGENT' | 'ROLE_ADMIN' | string;
-    agentDepartment: 'SALES' | 'SUPPLY' | 'LOGISTICS' | string;
+    role: Role;
+    agentDepartment: AgentDepartmentTypeEnum;
     performanceRate: number;
-    apiKey: string;
-    customers: Customer[];
-    suppliers: Supplier[];
+    apiKey?: string;
+    customers?: Customer[];
+    suppliers?: Supplier[];
   }

@@ -10,7 +10,7 @@ export interface CopraSale {
   saleQuantity: number;
   pricePerQuantity: number;
   totalSaleAmount?: number;
-  saleDate: string; // Use `string` or `Date` depending on your formatting
+  saleDate: string;
   customer: Customer;
   shippingPlan: ShippingPlan;
   paymentDetails: PaymentDetails;

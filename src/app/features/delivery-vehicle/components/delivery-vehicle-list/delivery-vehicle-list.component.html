@@ -1,1 +1,7 @@
-<p>delivery-vehicle-list works!</p>
+<app-table
+  [headers]="['Reg No', 'Type', 'Availability']"
+  [keys]="['vehicleRegNo', 'vehicleType', 'availabilityStatus']"
+  [data]="deliveryVehicles"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

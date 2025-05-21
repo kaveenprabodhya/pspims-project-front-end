@@ -1,1 +1,7 @@
-<p>payment-details-list works!</p>
+<app-table
+  [headers]="['Invoice No', 'Status', 'Date', 'Amount', 'Method']"
+  [keys]="['invoiceNo', 'paymentStatus', 'paymentDate', 'paymentAmount', 'paymentMethod']"
+  [data]="paymentDetailsList"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

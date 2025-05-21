@@ -35,9 +35,7 @@ export class CoconutwaterProdOrderListComponent {
     console.log('Edit ingredient:', ingredient);
   }
   
-  onDelete(index: number) {
-    if (confirm('Are you sure you want to delete this ingredient?')) {
-      this.coconutWaterProdOrders.splice(index, 1);
-    }
+  onDelete(ingredient: any) {
+   
   }
 }

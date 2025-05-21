@@ -1,0 +1,6 @@
+export enum SupplierStatusEnum {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BLACKLISTED = 'BLACKLISTED'
+}

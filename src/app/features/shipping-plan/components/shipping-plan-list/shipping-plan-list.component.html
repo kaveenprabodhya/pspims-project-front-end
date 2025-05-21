@@ -1,1 +1,23 @@
-<p>shipping-plan-list works!</p>
+<app-table
+  [headers]="[
+    'Shipping Address',
+    'Shipping Date',
+    'Tracking Number',
+    'Shipping Type',
+    'Shipping Status',
+    'Delivery Type',
+    'Delivery Vehicle Reg No'
+  ]"
+  [keys]="[
+    'shippingAddress',
+    'shippingDate',
+    'trackingNumber',
+    'shippingType',
+    'shippingStatus',
+    'deliveryType',
+    'deliveryVehicle.vehicleRegNo'
+  ]"
+  [data]="shippingPlans"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

@@ -1,1 +1,23 @@
-<p>prod-order-details-list works!</p>
+<app-table
+  [headers]="[
+    'Production Date',
+    'Quantity',
+    'Unit Price',
+    'Total Amount',
+    'Measure',
+    'Status',
+    'Batch Number'
+  ]"
+  [keys]="[
+    'prodDate',
+    'prodQuantity',
+    'pricePerUnit',
+    'totalAmount',
+    'productionQuantityMeasure',
+    'prodStatus',
+    'batchNumber'
+  ]"
+  [data]="prodOrderDetailsList"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

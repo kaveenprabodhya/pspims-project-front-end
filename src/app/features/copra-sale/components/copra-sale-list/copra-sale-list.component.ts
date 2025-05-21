@@ -38,8 +38,6 @@ export class CopraSaleListComponent {
     console.log('Edit:', item);
   }
 
-  onDelete(index: number) {
-    console.log('Delete index:', index);
-    this.copraSales.splice(index, 1);
+  onDelete(item: any) {
   }
 }

@@ -1,1 +1,19 @@
-<p>order-list works!</p>
+<app-table
+[headers]="[
+  'Order Date',
+  'Order Status',
+  'Customer',
+  'Payment Amount',
+  'Shipping Address'
+]"
+[keys]="[
+  'orderDate',
+  'orderStatus',
+  'customerName',
+  'paymentAmount',
+  'shippingAddress'
+]"
+[data]="orders"
+(edit)="onEdit($event)"
+(delete)="onDelete($event)"
+></app-table>

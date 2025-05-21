@@ -1,1 +1,23 @@
-<p>supplier-payment-details-list works!</p>
+<app-table
+  [headers]="[
+    'Supplier Name',
+    'Supplier Email',
+    'Payment Status',
+    'Payment Date',
+    'Payment Amount',
+    'Invoice No',
+    'Payment Method'
+  ]"
+  [keys]="[
+    'supplier.name',
+    'supplier.email',
+    'paymentDetails.paymentStatus',
+    'paymentDetails.paymentDate',
+    'paymentDetails.paymentAmount',
+    'paymentDetails.invoiceNo',
+    'paymentDetails.paymentMethod'
+  ]"
+  [data]="supplierPayments"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

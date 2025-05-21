@@ -1,0 +1,8 @@
+export enum CustomerType {
+  INDIVIDUAL = 'INDIVIDUAL',
+  CORPORATE = 'CORPORATE',
+  GOVERNMENT = 'GOVERNMENT',
+  NON_PROFIT = 'NON_PROFIT',
+  REGULAR = 'REGULAR',
+  New = 'NEW'
+}

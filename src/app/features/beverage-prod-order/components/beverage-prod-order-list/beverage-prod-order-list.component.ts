@@ -44,8 +44,7 @@ export class BeverageProdOrderListComponent {
     console.log('Edit', order);
   }
 
-  onDelete(index: number) {
-    this.beverageProdOrders.splice(index, 1);
+  onDelete(order: any) {
   }
 
 }

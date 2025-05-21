@@ -13,10 +13,9 @@ export class TableComponent {
   @Input() data: any[] = [];
 
   @Output() edit = new EventEmitter<any>();
-  @Output() delete = new EventEmitter<number>();
+  @Output() delete = new EventEmitter<any>();
 
   getValue(item: any, key: string): any {
-    // support nested keys like "beverageType.name"
     return key.split('.').reduce((val, part) => val?.[part], item);
   }
 }

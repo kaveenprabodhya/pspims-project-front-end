@@ -1,1 +1,237 @@
-<p>copra-sale-form works!</p>
+<div class="container mt-4">
+  <form [formGroup]="copraSaleForm" (ngSubmit)="submit()">
+    <div class="row">
+      <div class="col-md-4">
+        <label>Sale Quantity</label>
+        <input
+          formControlName="saleQuantity"
+          type="number"
+          class="form-control"
+          min="0"
+        />
+      </div>
+      <div class="col-md-4">
+        <label>Price Per Quantity</label>
+        <input
+          formControlName="pricePerQuantity"
+          type="number"
+          min="0"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-4">
+        <label>Sale Date</label>
+        <input formControlName="saleDate" type="date" class="form-control" />
+      </div>
+    </div>
+
+    <!-- Add Section Buttons -->
+    <div class="mt-3">
+      <button
+        type="button"
+        class="btn btn-outline-primary me-2"
+        (click)="toggleSection('customer')"
+      >
+        Add Customer
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-primary me-2"
+        (click)="toggleSection('customerSearch')"
+      >
+        Search Customer
+      </button>
+ 
+    </div>
+
+    <!-- Customer Dropdown for 'select' mode -->
+    <div *ngIf="showCustomerSearchForm" class="mt-3 border p-3">
+      <label class="mb-2">Select Existing Customer</label>
+      <select
+        #customerSelect
+        class="form-select"
+        (change)="onSelectCustomer(customerSelect.value)"
+      >
+        <option disabled selected [value]="">Select Customer</option>
+        <option *ngFor="let c of existingCustomers" [value]="c.id">
+          {{ c.firstName }} {{ c.lastName }}
+        </option>
+      </select>
+    </div>
+
+    <div
+      *ngIf="showCustomerForm"
+      [formGroup]="customerForm"
+      class="mt-3 border p-3"
+    >
+      <!-- Customer Fields (shown in both modes) -->
+      <div class="row">
+        <h5>Customer Info</h5>
+        <div class="col-md-4">
+          <input
+            formControlName="firstName"
+            class="form-control"
+            placeholder="First Name"
+          />
+        </div>
+        <div class="col-md-4">
+          <input
+            formControlName="lastName"
+            class="form-control"
+            placeholder="Last Name"
+          />
+        </div>
+        <div class="col-md-4">
+          <input
+            formControlName="email"
+            class="form-control"
+            placeholder="Email"
+          />
+        </div>
+        <div class="col-md-6 mt-2">
+          <input
+            formControlName="address"
+            class="form-control"
+            placeholder="Address"
+          />
+        </div>
+        <div class="col-md-3 mt-2">
+          <select formControlName="customerType" class="form-select">
+            <option disabled selected value="">Select Customer Type</option>
+            <option *ngFor="let custype of customerTypeOptions" [value]="custype">
+              {{ custype }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3 mt-2">
+          <input
+            formControlName="creditLimit"
+            type="number"
+            min="0"
+            class="form-control"
+            placeholder="Credit Limit"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Plan Form -->
+    <div
+      class="mt-3 border p-3"
+      [formGroup]="shippingPlanForm"
+    >
+      <h5>Shipping Plan</h5>
+      <div class="row">
+        <div class="col-md-6">
+          <input
+            formControlName="shippingAddress"
+            class="form-control"
+            placeholder="Shipping Address"
+          />
+        </div>
+        <div class="col-md-6">
+          <input
+            formControlName="shippingDate"
+            type="date"
+            class="form-control"
+            placeholder="Shipping Date"
+          />
+        </div>
+
+        <div class="col-md-3 mt-2">
+          <select formControlName="shippingType" class="form-select">
+            <option disabled selected value="">Select Shipping Type</option>
+            <option *ngFor="let type of shippingTypeOptions" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-3 mt-2">
+          <select formControlName="shippingStatus" class="form-select">
+            <option disabled selected value="">Select Shipping Status</option>
+            <option
+              *ngFor="let status of shippingStatusOptions"
+              [value]="status"
+            >
+              {{ status }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <select formControlName="deliveryType" class="form-select">
+            <option selected disabled value="">Select Delivery Type</option>
+            <option *ngFor="let dType of deliveryTypeOptions" [value]="dType">
+              {{ dType }}
+            </option>
+          </select>
+        </div>
+
+        <div *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'" class="col-md-6 mt-2">
+          <select formControlName="deliveryVehicle" class="form-select">
+            <option selected disabled [ngValue]="null">Select Avaiable Vehicle</option>
+            <option
+              *ngFor="let vehicle of deliveryVehicles"
+              [ngValue]="vehicle"
+            >
+              {{ vehicle.vehicleRegNo }} ({{ vehicle.id }})
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Details Form -->
+    <div
+      [formGroup]="paymentDetailsForm"
+      class="mt-3 border p-3"
+    >
+      <h5>Payment Details</h5>
+      <div class="row">
+        <div class="col-md-4">
+          <select formControlName="paymentStatus" class="form-select">
+            <option selected disabled value="">Select Payment Status</option>
+            <option *ngFor="let pStatus of paymentStatusOptions" [value]="pStatus">
+              {{ pStatus }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <input
+            formControlName="paymentDate"
+            type="date"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-4">
+          <input
+            formControlName="paymentAmount"
+            type="number"
+            class="form-control"
+            placeholder="Amount"
+            min="0"
+          />
+        </div>
+        <div class="col-md-6 mt-2">
+          <select formControlName="paymentMethod" class="form-select">
+            <option selected disabled value="">Select Payment Method</option>
+            <option *ngFor="let pMethod of paymentMethodOptions" [value]="pMethod">
+              {{ pMethod }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="copraSaleForm.invalid"
+      >
+        Submit Copra Sale
+      </button>
+    </div>
+  </form>
+</div>

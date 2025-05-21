@@ -38,7 +38,6 @@ export class CoconutPurchaseListComponent {
     // Add your edit logic
   }
 
-  onDelete(index: number) {
-    this.coconutPurchases.splice(index, 1);
+  onDelete(item: CoconutPurchase) {
   }
 }

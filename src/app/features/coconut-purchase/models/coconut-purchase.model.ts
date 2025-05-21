@@ -10,8 +10,8 @@ export interface CoconutPurchase {
   purchaseQuantity: number;
   pricePerUnit: number;
   totalPurchaseCost?: number;
-  purchaseDate: string; // ISO string
-  coconutQualityGrade: CoconutQualityGrade; // match your enum
+  purchaseDate: string;
+  coconutQualityGrade: CoconutQualityGrade;
   inventory: Inventory;
   supplier: Supplier;
 }

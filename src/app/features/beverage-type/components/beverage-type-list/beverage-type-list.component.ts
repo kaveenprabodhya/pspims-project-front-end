@@ -70,7 +70,6 @@ export class BeverageTypeListComponent {
     console.log('Edit:', item);
   }
 
-  onDelete(index: number) {
-    this.beverageTypes.splice(index, 1);
+  onDelete(item: any) {
   }
 }

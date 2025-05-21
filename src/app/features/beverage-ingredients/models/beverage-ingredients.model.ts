@@ -8,6 +8,6 @@ export interface BeverageIngredients {
   lastModifiedDate?: string;
   ingredientName: string;
   measureAmount: number;
-  ingredientMeasure: IngredientMeasure; // Use enum if desired
+  ingredientMeasure: IngredientMeasure; 
   beverageType: BeverageType;
 }

@@ -1,1 +1,7 @@
-<p>supplier-list works!</p>
+<app-table
+  [headers]="['Name', 'Email', 'Address', 'Status', 'Payment Terms']"
+  [keys]="['name', 'email', 'address', 'supplierStatus', 'supplierPaymentTerms']"
+  [data]="suppliers"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

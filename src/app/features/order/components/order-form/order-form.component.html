@@ -1,1 +1,276 @@
-<p>order-form works!</p>
+<!-- order-form.component.html -->
+<div class="container mt-4">
+  <form [formGroup]="orderForm" (ngSubmit)="submit()">
+    <div class="border p-3 mt-4">
+      <div class="mb-3">
+        <label class="form-label">Order Type</label>
+        <select class="form-select" formControlName="orderType">
+          <option disabled selected value="">Select Order Type</option>
+          <option value="CoconutWaterProdOrder">Coconut Water</option>
+          <option value="VinegarProdOrder">Vinegar</option>
+          <option value="BeverageProdOrder">Beverage</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Order Date</label>
+        <input type="date" class="form-control" formControlName="orderDate" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Order Status</label>
+        <select class="form-select" formControlName="orderStatus">
+          <option disabled selected value="">Select Order Status</option>
+          <option *ngFor="let status of orderStatusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Coconut Water Form -->
+    <div
+      class="border p-3 mt-4"
+      [formGroup]="coconutWaterProdOrderForm"
+      *ngIf="orderForm.get('orderType')?.value === 'CoconutWaterProdOrder'"
+    >
+      <h5>Coconut Water Order</h5>
+      <app-prod-order-details-form
+        [group]="coconutWaterProdOrderDetailsForm"
+      ></app-prod-order-details-form>
+    </div>
+
+    <!-- Vinegar Form -->
+    <div
+      class="border p-3 mt-4"
+      [formGroup]="vinegarProdOrderForm"
+      *ngIf="orderForm.get('orderType')?.value === 'VinegarProdOrder'"
+    >
+      <h5>Vinegar Order</h5>
+      <div formGroupName="prodOrderDetails">
+        <app-prod-order-details-form
+          [group]="vinegarProdOrderDetailsForm"
+        ></app-prod-order-details-form>
+      </div>
+      <div class="mt-3">
+        <label class="form-label">Fermentation Type</label>
+        <select class="form-select" formControlName="fermentationType">
+          <option disabled selected value="">Select Fermentation Type</option>
+          <option *ngFor="let type of fermentationTypeOptions" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Beverage Form -->
+    <div
+      class="border p-3 mt-4"
+      [formGroup]="beverageProdOrderForm"
+      *ngIf="orderForm.get('orderType')?.value === 'BeverageProdOrder'"
+    >
+      <h5>Beverage Order</h5>
+      <div formGroupName="prodOrderDetails">
+        <app-prod-order-details-form
+          [group]="beverageProdOrderDetailsForm"
+        ></app-prod-order-details-form>
+      </div>
+      <div class="mt-3">
+        <label class="form-label">Beverage Type</label>
+        <select class="form-select" formControlName="beverageType">
+          <option disabled selected value="">Select Beverage Type</option>
+          <option *ngFor="let beverage of beverageTypes" [value]="beverage">
+            {{ beverage.beverageName }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="my-3 border p-2">
+      <button
+        type="button"
+        class="btn btn-outline-primary me-2"
+        (click)="toggleSection('customer')"
+      >
+        Add Customer
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-primary me-2"
+        (click)="toggleSection('customerSearch')"
+      >
+        Search Customer
+      </button>
+    </div>
+    
+    
+    <div *ngIf="showCustomerSearchForm" class="mt-3 border p-3">
+      <label class="mb-2">Select Existing Customer</label>
+      <select
+        #customerSelect
+        class="form-select"
+        (change)="onSelectCustomer(customerSelect.value)"
+      >
+        <option disabled selected [value]="">Select Customer</option>
+        <option *ngFor="let c of existingCustomers" [value]="c.id">
+          {{ c.firstName }} {{ c.lastName }}
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="showCustomerForm" class="border p-3 mt-4" [formGroup]="customerForm">
+      <h5>Customer Information</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">First Name</label>
+          <input class="form-control" formControlName="firstName" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Last Name</label>
+          <input class="form-control" formControlName="lastName" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" formControlName="email" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Address</label>
+          <input class="form-control" formControlName="address" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Customer Type</label>
+          <select formControlName="customerType" class="form-select">
+            <option disabled selected value="">Select Customer Type</option>
+            <option *ngFor="let custype of customerTypeOptions" [value]="custype">
+              {{ custype }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Credit Limit</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="creditLimit"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Plan Section -->
+    <div class="border p-3 mt-4" [formGroup]="shippingPlanForm">
+      <h5>Shipping Plan</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Shipping Address</label>
+          <input class="form-control" formControlName="shippingAddress" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Shipping Date</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="shippingDate"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Shipping Type</label>
+          <select formControlName="shippingType" class="form-select">
+            <option disabled selected value="">Select Shipping Type</option>
+            <option *ngFor="let type of shippingTypeOptions" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Shipping Status</label>
+          <select formControlName="shippingStatus" class="form-select">
+            <option disabled selected value="">Select Shipping Status</option>
+            <option
+              *ngFor="let status of shippingStatusOptions"
+              [value]="status"
+            >
+              {{ status }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Delivery Type</label>
+          <select formControlName="deliveryType" class="form-select">
+            <option selected disabled value="">Select Delivery Type</option>
+            <option *ngFor="let dType of deliveryTypeOptions" [value]="dType">
+              {{ dType }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Delivery Vehicle</label>
+          <div *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'">
+            <select formControlName="deliveryVehicle" class="form-select">
+              <option selected disabled [ngValue]="null">Select Avaiable Vehicle</option>
+              <option
+                *ngFor="let vehicle of deliveryVehicles"
+                [ngValue]="vehicle"
+              >
+                {{ vehicle.vehicleRegNo }} ({{ vehicle.id }})
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Details Section -->
+    <div class="border p-3 mt-4" [formGroup]="paymentDetailsForm">
+      <h5>Payment Details</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Status</label>
+          <select formControlName="paymentStatus" class="form-select">
+            <option selected disabled value="">Select Payment Status</option>
+            <option *ngFor="let pStatus of paymentStatusOptions" [value]="pStatus">
+              {{ pStatus }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Date</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="paymentDate"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            min="0"
+            formControlName="paymentAmount"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Method</label>
+          <select formControlName="paymentMethod" class="form-select">
+            <option selected disabled value="">Select Payment Method</option>
+            <option *ngFor="let pMethod of paymentMethodOptions" [value]="pMethod">
+              {{ pMethod }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-4">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="orderForm.invalid"
+      >
+        Submit Order
+      </button>
+    </div>
+  </form>
+</div>

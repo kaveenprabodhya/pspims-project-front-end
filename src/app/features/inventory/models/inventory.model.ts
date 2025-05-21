@@ -1,14 +1,16 @@
-import { CoconutPurchase } from "../../coconut-purchase/models/coconut-purchase.model";
+import { InventoryItemTypeEnum } from '../../../shared/enums/inventory-item-type-enum';
+import { InventoryQuantityTypeEnum } from '../../../shared/enums/inventory-quantity-type-enum';
+import { CoconutPurchase } from '../../coconut-purchase/models/coconut-purchase.model';
 
 export interface Inventory {
-    id: string;
-    version: number;
-    createdDate: string;
-    lastModifiedDate: string;
-    inventoryItemType: 'RAW_COCONUT' | 'COPRA' | string;
-    inventoryQuantity: number;
-    inventoryQuantityType: 'KILOGRAM' | 'LITRE' | string;
-    minimumStockLevel: number;
-    maximumStockLevel: number;
-    coconutPurchase: CoconutPurchase[];
-  }
+  id?: string;
+  version?: number;
+  createdDate?: string;
+  lastModifiedDate?: string;
+  inventoryItemType: InventoryItemTypeEnum;
+  inventoryQuantity: number;
+  inventoryQuantityType: InventoryQuantityTypeEnum;
+  minimumStockLevel: number;
+  maximumStockLevel: number;
+  coconutPurchase?: CoconutPurchase[];
+}

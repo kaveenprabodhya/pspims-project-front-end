@@ -1,1 +1,16 @@
-<p>vinegar-prod-order-list works!</p>
+<app-table
+  [headers]="['Prod Date', 'Prod Quantity', 'Price Per Unit', 'Total Amount', 'Measure', 'Prod Status', 'Batch No', 'Fermentation Type']"
+  [keys]="[
+    'prodOrderDetails.prodDate',
+    'prodOrderDetails.prodQuantity',
+    'prodOrderDetails.pricePerUnit',
+    'prodOrderDetails.totalAmount',
+    'prodOrderDetails.productionQuantityMeasure',
+    'prodOrderDetails.prodStatus',
+    'prodOrderDetails.batchNumber',
+    'fermentationType'
+  ]"
+  [data]="vinegarProdOrders"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

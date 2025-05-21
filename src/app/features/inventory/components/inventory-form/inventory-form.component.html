@@ -1,1 +1,40 @@
-<p>inventory-form works!</p>
+<div class="container mt-4">
+    <h2>Add Inventory Item</h2>
+    <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Inventory Item Type</label>
+        <select class="form-select" formControlName="inventoryItemType" required>
+          <option value="" disabled selected>Select Item Type</option>
+          <option *ngFor="let type of itemTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" class="form-control" formControlName="inventoryQuantity" required min="0" />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Quantity Type</label>
+        <select class="form-select" formControlName="inventoryQuantityType" required>
+          <option value="" disabled selected>Select Quantity Type</option>
+          <option *ngFor="let qt of quantityTypes" [value]="qt">{{ qt }}</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Minimum Stock Level</label>
+        <input type="number" class="form-control" formControlName="minimumStockLevel" required min="0"/>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Maximum Stock Level</label>
+        <input type="number" class="form-control" formControlName="maximumStockLevel" required min="0" />
+      </div>
+  
+      <button class="btn btn-success" type="submit" [disabled]="inventoryForm.invalid">
+        Add Inventory
+      </button>
+    </form>
+  </div>
+  

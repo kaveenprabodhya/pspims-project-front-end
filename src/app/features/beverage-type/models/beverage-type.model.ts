@@ -12,6 +12,5 @@ export interface BeverageType {
   nutritionInfo: string;
   beverageIngredients?: BeverageIngredients[];
   beverageProdOrder?: BeverageProdOrder[];
-
 }
 

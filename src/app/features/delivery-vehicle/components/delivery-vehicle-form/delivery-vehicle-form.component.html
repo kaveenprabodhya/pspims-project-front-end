@@ -1,1 +1,36 @@
-<p>delivery-vehicle-form works!</p>
+<div class="container mt-4">
+    <h3>Add Delivery Vehicle</h3>
+    <form [formGroup]="vehicleForm" (ngSubmit)="submit()">
+      <div class="mb-3">
+        <label class="form-label">Vehicle Reg No</label>
+        <input
+          formControlName="vehicleRegNo"
+          class="form-control"
+          placeholder="Enter Vehicle Registration Number"
+        />
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Vehicle Type</label>
+        <select formControlName="vehicleType" class="form-select">
+            <option disabled selected value="">Select Vehicle Type</option>
+          <option *ngFor="let type of vehicleTypeOptions" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Availability Status</label>
+        <select formControlName="availabilityStatus" class="form-select">
+            <option disabled selected value="">Select Availability Status</option>
+          <option *ngFor="let status of availabilityStatusOptions" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+  
+      <button class="btn btn-success" type="submit" [disabled]="vehicleForm.invalid">Save</button>
+    </form>
+  </div>
+  

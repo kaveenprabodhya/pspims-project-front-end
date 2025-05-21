@@ -1,0 +1,7 @@
+export enum ShippingStatusEnum {
+  PENDING = 'PENDING',
+  IN_TRANSIT = 'IN_TRANSIT',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED',
+  RETURNED = 'RETURNED'
+}

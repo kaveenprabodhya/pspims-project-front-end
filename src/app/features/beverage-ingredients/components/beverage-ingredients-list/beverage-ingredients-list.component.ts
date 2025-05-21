@@ -39,13 +39,9 @@ export class BeverageIngredientsListComponent {
   ];
 
   onEdit(ingredient: any) {
-    // populate form or open modal
-    console.log('Edit ingredient:', ingredient);
   }
   
-  onDelete(index: number) {
-    if (confirm('Are you sure you want to delete this ingredient?')) {
-      this.beverageIngredients.splice(index, 1);
-    }
+  onDelete(ingredient: any) {
+    
   }
 }
