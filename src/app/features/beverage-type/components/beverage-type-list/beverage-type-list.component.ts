@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { TableComponent } from '../../../../shared/components/table/table.component';
+import { BeverageType } from '../../models/beverage-type.model';
+import { Router } from '@angular/router';
+import { BeverageTypeService } from '../../services/beverage-type.service';
 
 @Component({
   selector: 'app-beverage-type-list',
@@ -27,47 +30,20 @@ export class BeverageTypeListComponent {
           ingredientMeasure: 'GRAM',
         },
       ],
-      beverageProdOrder: [{ id: 'bpo-001' }, { id: 'bpo-002' }],
-    },
-    {
-      id: 'bt-002',
-      beverageName: 'Coconut Water',
-      beverageDescription: 'Pure natural coconut water.',
-      isActive: true,
-      nutritionInfo: 'Calories: 60, Sugar: 10g',
-      beverageIngredients: [
-        {
-          ingredientName: 'Coconut Water',
-          measureAmount: 200,
-          ingredientMeasure: 'ML',
-        },
-      ],
-      beverageProdOrder: [{ id: 'bpo-003' }],
-    },
-    {
-      id: 'bt-003',
-      beverageName: 'Ginger Ale',
-      beverageDescription: 'Sparkling ginger-flavored soft drink.',
-      isActive: false,
-      nutritionInfo: 'Calories: 150, Sugar: 35g',
-      beverageIngredients: [
-        {
-          ingredientName: 'Ginger',
-          measureAmount: 15,
-          ingredientMeasure: 'GRAM',
-        },
-        {
-          ingredientName: 'Carbonated Water',
-          measureAmount: 250,
-          ingredientMeasure: 'ML',
-        },
-      ],
-      beverageProdOrder: [],
-    },
+      beverageProdOrder: [{ id: 'bpo-001' }],
+    }
   ];
+
+  constructor(
+    private router: Router,
+    private beverageTypeService: BeverageTypeService
+  ) {}
   
-  onEdit(item: any) {
-    console.log('Edit:', item);
+  onEdit(type: BeverageType) {
+    console.log(type);
+    
+    this.beverageTypeService.setSelectedBeverageType(type);
+    this.router.navigate(['/admin/dashboard/beverage-type/form', type.id]);
   }
 
   onDelete(item: any) {

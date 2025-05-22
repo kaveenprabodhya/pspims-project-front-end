@@ -1,6 +1,12 @@
 <app-table
-  [headers]="['Name', 'Description', 'Active', 'Nutrition Info']"
-  [keys]="['beverageName', 'beverageDescription', 'isActive', 'nutritionInfo']"
+  [headers]="['Beverage ID', 'Name', 'Description', 'Active', 'Nutrition Info']"
+  [keys]="[
+    'id',
+    'beverageName',
+    'beverageDescription',
+    'isActive',
+    'nutritionInfo'
+  ]"
   [data]="beverageTypes"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

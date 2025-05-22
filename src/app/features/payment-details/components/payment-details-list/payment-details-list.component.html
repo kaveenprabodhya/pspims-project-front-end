@@ -1,6 +1,21 @@
 <app-table
-  [headers]="['Invoice No', 'Status', 'Date', 'Amount', 'Method']"
-  [keys]="['invoiceNo', 'paymentStatus', 'paymentDate', 'paymentAmount', 'paymentMethod']"
+  [headers]="[
+    'Payment Detail ID',
+    'Invoice No',
+    'Status',
+    'Date',
+    'Amount',
+    'Method'
+  ]"
+  [keys]="[
+    'id',
+    'invoiceNo',
+    'paymentStatus',
+    'paymentDate',
+    'paymentAmount',
+    'paymentMethod'
+  ]"
+  [actionDisable]="true"
   [data]="paymentDetailsList"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

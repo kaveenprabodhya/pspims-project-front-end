@@ -4,6 +4,8 @@ import { Agent } from '../../../agent/models/agent.model';
 import { SupplierPaymentTermsEnum } from '../../../../shared/enums/supplier-payment-terms-enum';
 import { SupplierStatusEnum } from '../../../../shared/enums/supplier-status-enum';
 import { Supplier } from '../../models/supplier.model';
+import { SupplierService } from '../../services/supplier.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-supplier-list',
@@ -13,6 +15,10 @@ import { Supplier } from '../../models/supplier.model';
 })
 export class SupplierListComponent {
   suppliers: Supplier[] = [];
+
+  constructor(private supplierService: SupplierService, private router: Router) {
+    
+  }
 
   ngOnInit(): void {
     this.loadSuppliers();
@@ -56,8 +62,8 @@ export class SupplierListComponent {
   }
 
   onEdit(supplier: Supplier): void {
-    console.log('Edit Supplier:', supplier);
-    // Add edit logic
+    this.supplierService.setSelectedSupplier(supplier);
+    this.router.navigate(['admin/dashboard/supplier/form', supplier.id]);
   }
 
   onDelete(supplier: Supplier): void {

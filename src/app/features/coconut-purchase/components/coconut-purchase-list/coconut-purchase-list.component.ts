@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { CoconutPurchase } from '../../models/coconut-purchase.model';
 import { CoconutQualityGrade } from '../../../../shared/enums/coconut-quality-grade.enum';
+import { CoconutPurchaseService } from '../../services/coconut-purchase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-coconut-purchase-list',
@@ -17,25 +19,24 @@ export class CoconutPurchaseListComponent {
       pricePerUnit: 2.5,
       totalPurchaseCost: 250,
       purchaseDate: '2024-06-01',
-      coconutQualityGrade: '' as CoconutQualityGrade,
-      inventory: null as any,
-      supplier: null as any,
-    },
-    {
-      id: '2',
-      purchaseQuantity: 80,
-      pricePerUnit: 2.0,
-      totalPurchaseCost: 160,
-      purchaseDate: '2024-06-10',
-      coconutQualityGrade: '' as CoconutQualityGrade,
-      inventory: null as any,
-      supplier: null as any,
-    },
+      coconutQualityGrade: CoconutQualityGrade.HIGH,
+      inventory: {
+        id: 'qwerty'
+      } as any,
+      supplier: {
+        id: 'asdfgh'
+      } as any,
+    }
   ];
 
+  constructor(
+    private purchaseService: CoconutPurchaseService,
+    private router: Router
+  ) {}
+
   onEdit(item: CoconutPurchase) {
-    console.log('Edit item:', item);
-    // Add your edit logic
+    this.purchaseService.setSelectedPurchase(item);
+    this.router.navigate(['/admin/dashboard/coconut-purchase/form', item.id]);
   }
 
   onDelete(item: CoconutPurchase) {

@@ -1,6 +1,6 @@
 <app-table
-  [headers]="['Reg No', 'Type', 'Availability']"
-  [keys]="['vehicleRegNo', 'vehicleType', 'availabilityStatus']"
+  [headers]="['Vehicle ID', 'Reg No', 'Type', 'Availability']"
+  [keys]="['id', 'vehicleRegNo', 'vehicleType', 'availabilityStatus']"
   [data]="deliveryVehicles"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { SupplierListComponent } from "../../components/supplier-list/supplier-list.component";
-import { SupplierFormComponent } from "../../components/supplier-form/supplier-form.component";
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-supplier-page',
-  imports: [SupplierListComponent, SupplierFormComponent],
+  imports: [RouterModule, CommonModule],
   templateUrl: './supplier-page.component.html',
   styleUrl: './supplier-page.component.css'
 })

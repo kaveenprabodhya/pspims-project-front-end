@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <h4 class="mb-3">Beverage Type Form</h4>
+    <h4 class="mb-3">{{ isEditMode ? 'Edit Beverage Type' : 'Add Beverage Type' }}</h4>
     <form (ngSubmit)="onSubmit()" #beverageForm="ngForm">
       
       <!-- Beverage Name -->
@@ -26,7 +26,9 @@
         <textarea class="form-control" id="nutritionInfo" name="nutritionInfo" rows="2" [(ngModel)]="beverageType.nutritionInfo"></textarea>
       </div>
   
-      <button type="submit" class="btn btn-primary" [disabled]="beverageForm.invalid">Submit</button>
+      <button type="submit" class="btn btn-primary" [disabled]="beverageForm.invalid">
+        {{ isEditMode ? 'Update Beverage Type' : 'Add Beverage Type' }}
+      </button>
     </form>
   </div>
   

@@ -1,5 +1,6 @@
 <app-table
   [headers]="[
+    'Production Order ID',
     'Production Date',
     'Quantity',
     'Unit Price',
@@ -9,6 +10,7 @@
     'Batch Number'
   ]"
   [keys]="[
+    'id',
     'prodDate',
     'prodQuantity',
     'pricePerUnit',
@@ -17,6 +19,7 @@
     'prodStatus',
     'batchNumber'
   ]"
+  [actionDisable]="true"
   [data]="prodOrderDetailsList"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

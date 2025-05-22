@@ -1,8 +1,8 @@
-<!-- order-form.component.html -->
 <div class="container mt-4">
-  <form [formGroup]="orderForm" (ngSubmit)="submit()">
+  <h5 class="mb-4">{{ isEditMode ? "Edit Order" : "Add Order" }}</h5>
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
     <div class="border p-3 mt-4">
-      <div class="mb-3">
+      <div *ngIf="!isEditMode" class="mb-3">
         <label class="form-label">Order Type</label>
         <select class="form-select" formControlName="orderType">
           <option disabled selected value="">Select Order Type</option>
@@ -86,11 +86,12 @@
       </div>
     </div>
 
-    <div class="my-3 border p-2">
+    <div *ngIf="!isEditMode" class="my-3 border p-2">
       <button
         type="button"
         class="btn btn-outline-primary me-2"
         (click)="toggleSection('customer')"
+        *ngIf="!isEditMode"
       >
         Add Customer
       </button>
@@ -98,12 +99,12 @@
         type="button"
         class="btn btn-outline-primary me-2"
         (click)="toggleSection('customerSearch')"
+        *ngIf="!isEditMode"
       >
         Search Customer
       </button>
     </div>
-    
-    
+
     <div *ngIf="showCustomerSearchForm" class="mt-3 border p-3">
       <label class="mb-2">Select Existing Customer</label>
       <select
@@ -118,30 +119,41 @@
       </select>
     </div>
 
-    <div *ngIf="showCustomerForm" class="border p-3 mt-4" [formGroup]="customerForm">
+    <div
+      *ngIf="showCustomerForm"
+      class="border p-3 mt-4"
+      [formGroup]="customerForm"
+    >
       <h5>Customer Information</h5>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">First Name</label>
-          <input class="form-control" formControlName="firstName" />
+          <input
+            class="form-control"
+            formControlName="firstName"
+            [readonly]="isEditMode"
+          />
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Last Name</label>
-          <input class="form-control" formControlName="lastName" />
+          <input class="form-control" formControlName="lastName" [readonly]="isEditMode" />
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control" formControlName="email" />
+          <input type="email" class="form-control" formControlName="email" [readonly]="isEditMode" />
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Address</label>
-          <input class="form-control" formControlName="address" />
+          <input class="form-control" formControlName="address" [readonly]="isEditMode" />
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Customer Type</label>
           <select formControlName="customerType" class="form-select">
             <option disabled selected value="">Select Customer Type</option>
-            <option *ngFor="let custype of customerTypeOptions" [value]="custype">
+            <option
+              *ngFor="let custype of customerTypeOptions"
+              [value]="custype"
+            >
               {{ custype }}
             </option>
           </select>
@@ -152,6 +164,7 @@
             type="number"
             class="form-control"
             formControlName="creditLimit"
+            [readonly]="isEditMode"
           />
         </div>
       </div>
@@ -204,10 +217,12 @@
           </select>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="form-label">Delivery Vehicle</label>
+          <label *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'" class="form-label">Delivery Vehicle</label>
           <div *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'">
             <select formControlName="deliveryVehicle" class="form-select">
-              <option selected disabled [ngValue]="null">Select Avaiable Vehicle</option>
+              <option selected disabled [ngValue]="null">
+                Select Avaiable Vehicle
+              </option>
               <option
                 *ngFor="let vehicle of deliveryVehicles"
                 [ngValue]="vehicle"
@@ -228,7 +243,10 @@
           <label class="form-label">Payment Status</label>
           <select formControlName="paymentStatus" class="form-select">
             <option selected disabled value="">Select Payment Status</option>
-            <option *ngFor="let pStatus of paymentStatusOptions" [value]="pStatus">
+            <option
+              *ngFor="let pStatus of paymentStatusOptions"
+              [value]="pStatus"
+            >
               {{ pStatus }}
             </option>
           </select>
@@ -254,7 +272,10 @@
           <label class="form-label">Payment Method</label>
           <select formControlName="paymentMethod" class="form-select">
             <option selected disabled value="">Select Payment Method</option>
-            <option *ngFor="let pMethod of paymentMethodOptions" [value]="pMethod">
+            <option
+              *ngFor="let pMethod of paymentMethodOptions"
+              [value]="pMethod"
+            >
               {{ pMethod }}
             </option>
           </select>
@@ -269,7 +290,7 @@
         class="btn btn-primary"
         [disabled]="orderForm.invalid"
       >
-        Submit Order
+        {{ isEditMode ? "Update Order" : "Submit Order" }}
       </button>
     </div>
   </form>

@@ -1,6 +1,15 @@
 <app-table
-  [headers]="['Production Order ID', 'Beverage Type']"
-  [keys]="['prodOrderDetails.id', 'beverageType.name']"
+  [headers]="[
+    'Beveragee Order ID',
+    'Production ID',
+    'Beverage Type ID'
+  ]"
+  [keys]="[
+    'id',
+    'prodOrderDetails.id',
+    'beverageType.id'
+  ]"
+  [actionDisable]="true"
   [data]="beverageProdOrders"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

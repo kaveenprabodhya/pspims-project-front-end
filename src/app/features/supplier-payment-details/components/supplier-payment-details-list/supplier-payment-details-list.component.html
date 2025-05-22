@@ -1,22 +1,19 @@
 <app-table
   [headers]="[
+    'Supplier ID',
     'Supplier Name',
     'Supplier Email',
-    'Payment Status',
-    'Payment Date',
-    'Payment Amount',
     'Invoice No',
-    'Payment Method'
+    'Payment ID'
   ]"
   [keys]="[
+    'supplier.id',
     'supplier.name',
     'supplier.email',
-    'paymentDetails.paymentStatus',
-    'paymentDetails.paymentDate',
-    'paymentDetails.paymentAmount',
     'paymentDetails.invoiceNo',
-    'paymentDetails.paymentMethod'
+    'paymentDetails.id'
   ]"
+  [actionDisable]="true"
   [data]="supplierPayments"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

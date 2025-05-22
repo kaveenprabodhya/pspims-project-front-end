@@ -1,6 +1,20 @@
 <app-table
-  [headers]="['Name', 'Email', 'Address', 'Status', 'Payment Terms']"
-  [keys]="['name', 'email', 'address', 'supplierStatus', 'supplierPaymentTerms']"
+  [headers]="[
+    'Supplier ID',
+    'Supplier Name',
+    'Supplier Email',
+    'Supplier Address',
+    'Supplier Status',
+    'Supplier Payment Terms'
+  ]"
+  [keys]="[
+    'id',
+    'name',
+    'email',
+    'address',
+    'supplierStatus',
+    'supplierPaymentTerms'
+  ]"
   [data]="suppliers"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

@@ -1,4 +1,4 @@
-<h5 class="mb-4">Add Coconut Purchase</h5>
+<h5 class="mb-4">{{ isEditMode ? 'Edit Coconut Purchase' : 'Add Coconut Purchase' }}</h5>
 
 <form #coconutForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="row mb-3">
@@ -98,6 +98,6 @@
   </div>
 
   <button type="submit" class="btn btn-primary" [disabled]="!coconutForm.form.valid">
-    Submit Purchase
+    {{ isEditMode ? 'Update Purchase' : 'Submit Purchase' }}
   </button>
 </form>

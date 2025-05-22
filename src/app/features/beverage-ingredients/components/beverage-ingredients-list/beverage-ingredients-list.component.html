@@ -1,8 +1,20 @@
 <h5>Beverage Ingredients</h5>
 
 <app-table
-  [headers]="['Name', 'Amount', 'Measure', 'Beverage Type']"
-  [keys]="['ingredientName', 'measureAmount', 'ingredientMeasure', 'beverageType.name']"
+  [headers]="[
+    'Beverage Ingredient ID',
+    'Name',
+    'Amount',
+    'Measure',
+    'Beverage Type ID'
+  ]"
+  [keys]="[
+    'id',
+    'ingredientName',
+    'measureAmount',
+    'ingredientMeasure',
+    'beverageType.id'
+  ]"
   [data]="beverageIngredients"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

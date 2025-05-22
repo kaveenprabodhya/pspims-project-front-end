@@ -1,13 +1,14 @@
 <app-table
-  [headers]="['Order Code', 'Quantity', 'Unit', 'Start Date', 'End Date']"
+  [headers]="[
+    'Coconut Water Order ID',
+    'Production ID',
+  ]"
   [keys]="[
-    'prodOrderDetails.orderCode',
-    'prodOrderDetails.quantity',
-    'prodOrderDetails.unit',
-    'prodOrderDetails.startDate',
-    'prodOrderDetails.endDate'
+    'id',
+    'prodOrderDetails.id',
   ]"
   [data]="coconutWaterProdOrders"
+  [actionDisable]="true"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"
 ></app-table>

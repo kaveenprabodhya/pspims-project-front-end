@@ -1,6 +1,6 @@
 <div class="container mt-4">
-    <h3>Add Delivery Vehicle</h3>
-    <form [formGroup]="vehicleForm" (ngSubmit)="submit()">
+    <h5 class="mb-4">{{ isEditMode ? "Edit Vehicle" : "Add Vehicle" }}</h5>
+    <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label class="form-label">Vehicle Reg No</label>
         <input
@@ -30,7 +30,9 @@
         </select>
       </div>
   
-      <button class="btn btn-success" type="submit" [disabled]="vehicleForm.invalid">Save</button>
+      <button class="btn btn-success" type="submit" [disabled]="vehicleForm.invalid">
+        {{ isEditMode ? "Update Vehicle" : "Add Vehicle" }}
+      </button>
     </form>
   </div>
   

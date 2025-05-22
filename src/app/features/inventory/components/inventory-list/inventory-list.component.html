@@ -1,19 +1,21 @@
 <app-table
-    [headers]="[
-      'Item Type',
-      'Quantity',
-      'Quantity Type',
-      'Min Stock',
-      'Max Stock'
-    ]"
-    [keys]="[
-      'inventoryItemType',
-      'inventoryQuantity',
-      'inventoryQuantityType',
-      'minimumStockLevel',
-      'maximumStockLevel'
-    ]"
-    [data]="inventories"
-    (edit)="onEdit($event)"
-    (delete)="onDelete($event)"
-  ></app-table>
+  [headers]="[
+    'Iventory ID',
+    'Item Type',
+    'Quantity',
+    'Quantity Type',
+    'Min Stock',
+    'Max Stock'
+  ]"
+  [keys]="[
+    'id',
+    'inventoryItemType',
+    'inventoryQuantity',
+    'inventoryQuantityType',
+    'minimumStockLevel',
+    'maximumStockLevel'
+  ]"
+  [data]="inventories"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+></app-table>

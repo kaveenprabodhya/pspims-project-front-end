@@ -1,21 +1,23 @@
 <app-table
   [headers]="[
+    'Copra Sale ID',
     'Sale Quantity',
     'Price per Quantity',
     'Total Sale Amount',
     'Sale Date',
-    'Customer',
-    'Shipping Plan',
-    'Payment Status'
+    'Customer ID',
+    'Shipping Plan ID',
+    'Payment Detail ID'
   ]"
   [keys]="[
+    'id',
     'saleQuantity',
     'pricePerQuantity',
     'totalSaleAmount',
     'saleDate',
-    'customer.name',
-    'shippingPlan.planCode',
-    'paymentDetails.status'
+    'customer.id',
+    'shippingPlan.id',
+    'paymentDetails.id'
   ]"
   [data]="copraSales"
   (edit)="onEdit($event)"

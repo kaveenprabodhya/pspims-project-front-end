@@ -3,6 +3,10 @@ import { TableComponent } from "../../../../shared/components/table/table.compon
 import { SupplierPaymentDetails } from '../../models/supplier-payment-details.model';
 import { PaymentDetails } from '../../../payment-details/models/payment-details.model';
 import { Supplier } from '../../../supplier/models/supplier.model';
+import { PaymentStatusEnum } from '../../../../shared/enums/payment-status-enum';
+import { PaymentMethodEnum } from '../../../../shared/enums/payment-method-enum';
+import { SupplierPaymentTermsEnum } from '../../../../shared/enums/supplier-payment-terms-enum';
+import { SupplierStatusEnum } from '../../../../shared/enums/supplier-status-enum';
 
 @Component({
   selector: 'app-supplier-payment-details-list',
@@ -20,23 +24,27 @@ export class SupplierPaymentDetailsListComponent {
   }
 
   loadSupplierPayments(): void {
-    const rawSupplierPayments = [
+    const rawSupplierPayments: SupplierPaymentDetails[] = [
       {
         id: '1',
         paymentDetails: {
-          paymentStatus: 'PAID',
+          id: 'qwertyu',
+          paymentStatus: PaymentStatusEnum.PAID,
           paymentDate: '2025-05-20',
           paymentAmount: 1500,
           invoiceNo: 'INV-001',
-          paymentMethod: 'CREDIT_CARD'
-        } as PaymentDetails,
+          paymentMethod: PaymentMethodEnum.CREDIT_CARD
+        },
         supplier: {
           id: 'sup1',
           firstName: 'Supplier',
           lastName: 'One',
           email: 'sup1@example.com',
           address: '',
-        } as Supplier
+          supplierPaymentTerms: SupplierPaymentTermsEnum.COD,
+          supplierStatus: SupplierStatusEnum.ACTIVE,
+          agent: null as any
+        }
       },
     ];
 

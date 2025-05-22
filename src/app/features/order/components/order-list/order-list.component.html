@@ -1,19 +1,27 @@
 <app-table
-[headers]="[
-  'Order Date',
-  'Order Status',
-  'Customer',
-  'Payment Amount',
-  'Shipping Address'
-]"
-[keys]="[
-  'orderDate',
-  'orderStatus',
-  'customerName',
-  'paymentAmount',
-  'shippingAddress'
-]"
-[data]="orders"
-(edit)="onEdit($event)"
-(delete)="onDelete($event)"
+  [headers]="[
+    'Order ID',
+    'Order Date',
+    'Order Status',
+    'Coconut Water Production Order ID',
+    'Beverage Production Order ID',
+    'Vinegar Production Order ID',
+    'Shipping Plan ID',
+    'Payment Details ID',
+    'Customer ID'
+  ]"
+  [keys]="[
+    'id',
+    'orderDate',
+    'orderStatus',
+    'coconutWaterProdOrder.id',
+    'vinegarProdOrder.id',
+    'beverageProdOrder.id',
+    'paymentDetails.id',
+    'customer.id',
+    'shippingPlan.id'
+  ]"
+  [data]="orders"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
 ></app-table>

@@ -1,4 +1,4 @@
-<h5 class="mb-3">Add New Ingredient</h5>
+<h5 class="mb-3">{{ isEditMode ? 'Edit Ingredient' : 'Add New Ingredient' }}</h5>
 
 <form #ingredientForm="ngForm" (ngSubmit)="onSubmit()" class="mt-3">
   <div class="mb-3">
@@ -37,7 +37,7 @@
       [(ngModel)]="ingredient.ingredientMeasure"
       required
     >
-      <option value="" disabled selected>Select Measure</option>
+      <option value="" disabled>Select Measure</option>
       <option value="GRAM">GRAM</option>
       <option value="ML">ML</option>
       <option value="LITER">LITER</option>
@@ -60,7 +60,8 @@
       </option>
     </select>
   </div>
+
   <button type="submit" class="btn btn-primary" [disabled]="ingredientForm.invalid">
-    Add Ingredient
+    {{ isEditMode ? 'Update Ingredient' : 'Add Ingredient' }}
   </button>
 </form>

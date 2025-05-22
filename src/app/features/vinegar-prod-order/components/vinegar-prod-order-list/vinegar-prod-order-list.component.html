@@ -1,16 +1,16 @@
 <app-table
-  [headers]="['Prod Date', 'Prod Quantity', 'Price Per Unit', 'Total Amount', 'Measure', 'Prod Status', 'Batch No', 'Fermentation Type']"
+  [headers]="[
+    'Vinegar Order ID',
+    'Production ID',
+    'Fermentation Type'
+  ]"
   [keys]="[
-    'prodOrderDetails.prodDate',
-    'prodOrderDetails.prodQuantity',
-    'prodOrderDetails.pricePerUnit',
-    'prodOrderDetails.totalAmount',
-    'prodOrderDetails.productionQuantityMeasure',
-    'prodOrderDetails.prodStatus',
-    'prodOrderDetails.batchNumber',
+    'id',
+    'prodOrderDetails.id',
     'fermentationType'
   ]"
   [data]="vinegarProdOrders"
+  [actionDisable]="true"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"
 ></app-table>

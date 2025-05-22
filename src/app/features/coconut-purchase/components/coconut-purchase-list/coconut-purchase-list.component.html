@@ -1,21 +1,23 @@
 <app-table
   [headers]="[
+    'id',
     'Quantity',
     'Price/Unit',
     'Total Cost',
     'Purchase Date',
     'Quality Grade',
-    'Inventory',
-    'Supplier'
+    'Inventory ID',
+    'Supplier ID'
   ]"
   [keys]="[
+    'id',
     'purchaseQuantity',
     'pricePerUnit',
     'totalPurchaseCost',
     'purchaseDate',
     'coconutQualityGrade',
-    'inventory.name', 
-    'supplier.name' 
+    'inventory.id',
+    'supplier.id'
   ]"
   [data]="coconutPurchases"
   (edit)="onEdit($event)"

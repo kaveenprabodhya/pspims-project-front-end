@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { OrderListComponent } from "../../components/order-list/order-list.component";
-import { OrderFormComponent } from "../../components/order-form/order-form.component";
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-order-page',
-  imports: [OrderListComponent, OrderFormComponent],
+  imports: [RouterModule, CommonModule],
   templateUrl: './order-page.component.html',
   styleUrl: './order-page.component.css'
 })

@@ -1,6 +1,13 @@
 <app-table
-  [headers]="['Name', 'Email', 'Address', 'Type', 'Credit Limit']"
-  [keys]="['fullName', 'email', 'address', 'customerType', 'creditLimit']"
+  [headers]="[
+    'Customer ID',
+    'Name',
+    'Email',
+    'Address',
+    'Type',
+    'Credit Limit'
+  ]"
+  [keys]="['id', 'fullName', 'email', 'address', 'customerType', 'creditLimit']"
   [data]="customers"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)"

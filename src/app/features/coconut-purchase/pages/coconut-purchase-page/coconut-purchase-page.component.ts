@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CoconutPurchaseListComponent } from "../../components/coconut-purchase-list/coconut-purchase-list.component";
-import { CoconutPurchaseFormComponent } from "../../components/coconut-purchase-form/coconut-purchase-form.component";
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-coconut-purchase-page',
-  imports: [CoconutPurchaseListComponent, CoconutPurchaseFormComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './coconut-purchase-page.component.html',
   styleUrl: './coconut-purchase-page.component.css'
 })

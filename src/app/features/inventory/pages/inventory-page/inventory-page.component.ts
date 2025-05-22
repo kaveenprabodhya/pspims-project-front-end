@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { InventoryListComponent } from "../../components/inventory-list/inventory-list.component";
-import { InventoryFormComponent } from "../../components/inventory-form/inventory-form.component";
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-inventory-page',
-  imports: [InventoryListComponent, InventoryFormComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './inventory-page.component.html',
   styleUrl: './inventory-page.component.css'
 })

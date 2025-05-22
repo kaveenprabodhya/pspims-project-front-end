@@ -1,50 +1,45 @@
 import { Component } from '@angular/core';
-import { TableComponent } from "../../../../shared/components/table/table.component";
+import { TableComponent } from '../../../../shared/components/table/table.component';
+import { ProductionQuantityMeasureEnum } from '../../../../shared/enums/production-quantity-measure-enum';
+import { ProdStatusEnum } from '../../../../shared/enums/prod-status-enum';
+import { BeverageProdOrder } from '../../models/beverage-prod-order.model';
 
 @Component({
   selector: 'app-beverage-prod-order-list',
   imports: [TableComponent],
   templateUrl: './beverage-prod-order-list.component.html',
-  styleUrl: './beverage-prod-order-list.component.css'
+  styleUrl: './beverage-prod-order-list.component.css',
 })
 export class BeverageProdOrderListComponent {
-  
-  beverageProdOrders = [
+  beverageProdOrders: BeverageProdOrder[] = [
     {
       id: '1a2b3c',
       prodOrderDetails: {
-        id: 'pod-001'
-        // Add more fields if needed
+        id: '1a2b3c',
+        version: 1,
+        createdDate: '2025-05-01T10:00:00Z',
+        lastModifiedDate: '2025-05-02T12:30:00Z',
+        prodDate: '2025-05-10',
+        prodQuantity: 100,
+        pricePerUnit: 2.5,
+        totalAmount: 250,
+        productionQuantityMeasure: ProductionQuantityMeasureEnum.LITERS,
+        prodStatus: ProdStatusEnum.COMPLETED,
+        batchNumber: 'BATCH-001',
       },
       beverageType: {
-        name: 'Lemon Juice'
-      }
+        id: 'asdfghj',
+        beverageName: 'Lemon Juice',
+        beverageDescription: '',
+        nutritionInfo: '',
+        isActive: true
+      },
     },
-    {
-      id: '4d5e6f',
-      prodOrderDetails: {
-        id: 'pod-002'
-      },
-      beverageType: {
-        name: 'Coconut Water'
-      }
-    },
-    {
-      id: '7g8h9i',
-      prodOrderDetails: {
-        id: 'pod-003'
-      },
-      beverageType: {
-        name: 'Ginger Ale'
-      }
-    }
   ];
 
   onEdit(order: any) {
     console.log('Edit', order);
   }
 
-  onDelete(order: any) {
-  }
-
+  onDelete(order: any) {}
 }

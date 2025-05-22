@@ -50,3 +50,8 @@
   color: white;
 }
 
+.nav-link.active {
+  font-weight: 500;
+  color: #fff !important;
+  background-color: #848588 !important; /* Bootstrap primary color */
+}

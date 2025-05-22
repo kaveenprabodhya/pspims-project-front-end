@@ -23,6 +23,11 @@ import { Customer } from '../../../customer/models/customer.model';
 import { CustomerType } from '../../../../shared/enums/customer-type';
 import { VehicleTypeEnum } from '../../../../shared/enums/vehicle-type-enum.enum';
 import { VehicleAvailabilityStatusEnum } from '../../../../shared/enums/vehicle-availability-status-enum';
+import { Order } from '../../models/order.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OrderService } from '../../services/order.service';
+import { PaymentDetails } from '../../../payment-details/models/payment-details.model';
+import { ShippingPlan } from '../../../shipping-plan/models/shipping-plan.model';
 
 @Component({
   selector: 'app-order-form',
@@ -49,7 +54,13 @@ export class OrderFormComponent {
   showCustomerForm = false;
   showCustomerSearchForm = true;
 
-  constructor(private fb: FormBuilder) {
+  isEditMode = false;
+  order: Order = this.initEmptyOrder();
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute,
+    private router: Router,
+    private orderService: OrderService
+) {
     this.orderForm = this.fb.group({
       customerMode: ['existing'],
       orderType: ['', Validators.required],
@@ -67,6 +78,40 @@ export class OrderFormComponent {
   }
 
   ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.isEditMode = true;
+        this.orderService.selectedOrder$.subscribe(data => {
+          if (data && data.id === id) {
+            this.order = { ...data };
+
+            // Patch all fields of the form with data
+            this.orderForm.patchValue({
+              orderDate: data.orderDate,
+              orderStatus: data.orderStatus,
+              coconutWaterProdOrder: data.coconutWaterProdOrder,
+              vinegarProdOrder: data.vinegarProdOrder,
+              beverageProdOrder: data.beverageProdOrder,
+              paymentDetails: data.paymentDetails,
+              customer: data.customer,
+              shippingPlan: data.shippingPlan,
+            });
+          }
+        });
+
+        if (this.isEditMode) {
+          this.showCustomerForm = true;
+          this.showCustomerSearchForm = false;
+          this.customerForm.get('customerType')?.disable();
+        }
+
+      } else {
+        this.isEditMode = false;
+        this.order = this.initEmptyOrder();
+        this.orderService.clearSelectedOrder();
+      }
+    });
     this.loadBeverageTypes();
     this.onOrderTypeChange();
     this.loadDeliveryVehicles();
@@ -83,6 +128,17 @@ export class OrderFormComponent {
         }
         vehicleControl?.updateValueAndValidity();
       });
+  }
+
+  initEmptyOrder(): Order {
+    return {
+      id: '',
+      orderDate: '',
+      orderStatus: '' as OrderStatusEnum,  
+      paymentDetails: {} as PaymentDetails,
+      customer: {} as Customer,
+      shippingPlan: {} as ShippingPlan
+    };
   }
 
   loadDeliveryVehicles(): void {
@@ -107,7 +163,7 @@ export class OrderFormComponent {
         customerType: CustomerType.INDIVIDUAL,
         creditLimit: 1000,
         agent: null as any,
-      }, // add real data
+      }, 
     ];
   }
 
@@ -130,9 +186,22 @@ export class OrderFormComponent {
         'vinegarProdOrder',
         'beverageProdOrder',
       ];
-      all.forEach((key) => this.orderForm.get(key)?.disable());
+      all.forEach((key) => {
+        const form = this.orderForm.get(key)  as FormGroup
+
+        form?.disable();
+
+        const prodDetails = form?.get('prodOrderDetails') as FormGroup;
+
+      prodDetails?.get('totalAmount')?.setValue(0, { emitEvent: false });
+      });
+
+      this.paymentDetailsForm
+      .get('paymentAmount')
+      ?.setValue('', { emitEvent: false });
 
       const activeKey = this.getActiveFormKey(type);
+
       if (activeKey) {
         const activeForm = this.orderForm.get(activeKey);
         activeForm?.enable();
@@ -140,7 +209,12 @@ export class OrderFormComponent {
         const prodDetails = activeForm?.get('prodOrderDetails');
         prodDetails?.valueChanges.subscribe((val) => {
           const total = val.prodQuantity * val.pricePerUnit;
+
           prodDetails.get('totalAmount')?.setValue(total, { emitEvent: false });
+
+          this.paymentDetailsForm
+            .get('paymentAmount')
+            ?.setValue(total, { emitEvent: false });
         });
       }
     });
@@ -172,10 +246,10 @@ export class OrderFormComponent {
         prodDate: [null, Validators.required],
         prodQuantity: [0, [Validators.required, Validators.min(0.01)]],
         pricePerUnit: [0, [Validators.required, Validators.min(0.01)]],
-        totalAmount: [{ value: 0, disabled: true }], // auto-calculated
+        totalAmount: [{ value: 0, disabled: true }], 
         productionQuantityMeasure: [[''], Validators.required],
         prodStatus: [[''], Validators.required],
-        batchNumber: [{ value: '', disabled: true }], // UUID auto-gen
+        batchNumber: [{ value: '', disabled: true }],
       }),
     });
   }
@@ -236,7 +310,7 @@ export class OrderFormComponent {
     return this.fb.group({
       paymentStatus: [''],
       paymentDate: [''],
-      paymentAmount: [null],
+      paymentAmount: [{ value: '', disabled: true }],
       paymentMethod: [''],
     });
   }
@@ -275,7 +349,30 @@ export class OrderFormComponent {
 
   customerTypeOptions = Object.values(CustomerType);
 
-  submit() {}
+  onSubmit() {
+    if (this.isEditMode) {
+      this.updateOrder();
+    } else {
+      this.addOrder();
+    }
+  }
+
+  addOrder() {
+    console.log('Adding order:', this.orderForm.value);
+    this.resetForm();
+  }
+
+  updateOrder() {
+    console.log('Updating order:', this.orderForm.value);
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.order = this.initEmptyOrder();
+    this.orderForm.reset();
+    this.orderService.clearSelectedOrder();
+    this.router.navigate(['admin/dashboard/order/list']);
+  }
 
   get coconutWaterProdOrderForm(): FormGroup {
     return this.orderForm.get('coconutWaterProdOrder') as FormGroup;

@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <h2>Add Inventory Item</h2>
+  <h5>{{ isEditMode ? 'Edit Inventory' : 'Add Inventory' }}</h5>
     <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label class="form-label">Inventory Item Type</label>
@@ -33,7 +33,7 @@
       </div>
   
       <button class="btn btn-success" type="submit" [disabled]="inventoryForm.invalid">
-        Add Inventory
+        {{ isEditMode ? 'Update Inventory' : 'Add Inventory' }}
       </button>
     </form>
   </div>

@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <h3>Add New Supplier</h3>
+  <h5>{{ isEditMode ? 'Edit Supplier' : 'Add Supplier' }}</h5>
     <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label class="form-label">First Name</label>
@@ -42,7 +42,7 @@
       </div>
   
       <button type="submit" class="btn btn-primary" [disabled]="supplierForm.invalid">
-        Submit
+        {{ isEditMode ? 'Update Supplier' : 'Add Supplier' }}
       </button>
     </form>
   </div>
