@@ -1,9 +1,50 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { PagedResponse } from '../../../shared/page-response';
+import { BeverageProdOrder } from '../models/beverage-prod-order.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BeverageProdOrderService {
 
-  constructor() { }
+  private baseUrl = `${environment.apiUrl}/beverageProdOrders`;
+
+  constructor(private http: HttpClient) {}
+
+  // Get all with pagination
+  getAll(pageNumber: number = 0, pageSize: number = 10): Observable<PagedResponse<BeverageProdOrder>> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<PagedResponse<BeverageProdOrder>>(this.baseUrl, { params });
+  }
+
+  // Get one by ID
+  getById(id: string): Observable<BeverageProdOrder> {
+    return this.http.get<BeverageProdOrder>(`${this.baseUrl}/${id}`);
+  }
+
+  // Create
+  create(order: BeverageProdOrder): Observable<BeverageProdOrder> {
+    return this.http.post<BeverageProdOrder>(this.baseUrl, order);
+  }
+
+  // Update
+  update(id: string, order: BeverageProdOrder): Observable<BeverageProdOrder> {
+    return this.http.put<BeverageProdOrder>(`${this.baseUrl}/${id}`, order);
+  }
+
+  // Patch (partial update)
+  patch(id: string, partialOrder: Partial<BeverageProdOrder>): Observable<BeverageProdOrder> {
+    return this.http.patch<BeverageProdOrder>(`${this.baseUrl}/${id}`, partialOrder);
+  }
+
+  // Delete
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }

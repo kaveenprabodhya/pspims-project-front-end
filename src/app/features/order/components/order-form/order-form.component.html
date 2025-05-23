@@ -2,7 +2,7 @@
   <h5 class="mb-4">{{ isEditMode ? "Edit Order" : "Add Order" }}</h5>
   <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
     <div class="border p-3 mt-4">
-      <div *ngIf="!isEditMode" class="mb-3">
+      <div class="mb-3">
         <label class="form-label">Order Type</label>
         <select class="form-select" formControlName="orderType">
           <option disabled selected value="">Select Order Type</option>

@@ -1,21 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   loginForm: FormGroup;
   submitted = false;
   loginError: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
   }
@@ -26,13 +37,21 @@ export class LoginComponent {
       return;
     }
 
-    const { email, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
-    // Simulate login logic
-    if (email === 'admin@example.com' && password === 'admin') {
-      console.log('Login successful');
-    } else {
-      this.loginError = 'Invalid email or password.';
-    }
+    console.log(username, password);
+    
+
+    this.authService.login(username, password).subscribe({
+      next: (token) => {
+        localStorage.setItem('user', token);
+        this.loginError = null;
+        this.router.navigate(['admin/dashboard/']);
+      },
+      error: (err) => {
+        this.loginError = 'Invalid username or password';
+        console.error('Login failed', err);
+      },
+    });
   }
 }

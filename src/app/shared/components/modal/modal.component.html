@@ -1,1 +1,13 @@
-<p>modal works!</p>
+<!-- modal.component.html -->
+<div *ngIf="visible" class="modal-backdrop">
+    <div class="modal-content p-4 rounded shadow bg-white">
+      <h4 class="mb-3">{{ title }}</h4>
+  
+      <div [innerHTML]="htmlContent"></div>
+  
+      <div class="text-end mt-4">
+        <button class="btn btn-secondary" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>
+  

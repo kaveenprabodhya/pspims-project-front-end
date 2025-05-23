@@ -30,7 +30,7 @@
             class="d-flex justify-content-between align-items-center position-relative"
           >
             <span class="text-truncate" style="max-width: 200px">{{
-              getValue(item, key)
+              getValue(item, key) ?? '—'
             }}</span>
 
             <div class="position-relative d-flex align-items-center ms-2">
@@ -50,7 +50,7 @@
                 Copied!
               </span>
               <button
-                *ngIf="isCopyable(key)"
+                *ngIf="isCopyable(key) && getValue(item, key)"
                 class="btn btn-sm btn-light border"
                 title="Copy"
                 (click)="copyToClipboard(getValue(item, key), key, rowIndex)"

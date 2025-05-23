@@ -4,60 +4,56 @@ import { ShippingPlan } from '../../models/shipping-plan.model';
 import { ShippingTypeEnum } from '../../../../shared/enums/shipping-type-enum';
 import { ShippingStatusEnum } from '../../../../shared/enums/shipping-status-enum';
 import { DeliveryTypeEnum } from '../../../../shared/enums/delivery-type-enum';
+import { ShippingPlanService } from '../../services/shipping-plan.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-shipping-plan-list',
-  imports: [TableComponent],
+  imports: [TableComponent, CommonModule],
   templateUrl: './shipping-plan-list.component.html',
   styleUrl: './shipping-plan-list.component.css'
 })
 export class ShippingPlanListComponent {
   shippingPlans: ShippingPlan[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
-  constructor() {}
+  constructor(
+    private shippingPlanService: ShippingPlanService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadShippingPlans();
+    this.loadShippingPlans(this.pageNumber);
   }
 
-  loadShippingPlans(): void {
-    // Mock data - replace with real API call later
-    this.shippingPlans = [
-      {
-        id: '1',
-        shippingAddress: '123 Main St',
-        shippingDate: '2025-06-01',
-        trackingNumber: 'TRACK123',
-        shippingType: ShippingTypeEnum.EXPRESS,
-        shippingStatus: ShippingStatusEnum.IN_TRANSIT,
-        deliveryType: DeliveryTypeEnum.HOME_DELIVERY,
-        deliveryVehicle: {
-          id: 'v1',
-          vehicleRegNo: 'XYZ-123',
-          vehicleType: null as any,
-          availabilityStatus: null as any
-        }
+  loadShippingPlans(page: number): void {
+    this.shippingPlanService.getAll(page, this.pageSize).subscribe({
+      next: (response) => {
+        this.shippingPlans = response.content;
+        this.pageNumber = response.page.number;
+        this.pageSize = response.page.size;
+        this.totalPages = response.page.totalPages;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
       },
-      {
-        id: '2',
-        shippingAddress: '456 Market St',
-        shippingDate: '2025-06-03',
-        trackingNumber: 'TRACK456',
-        shippingType: ShippingTypeEnum.LAND,
-        shippingStatus: ShippingStatusEnum.DELIVERED,
-        deliveryType: DeliveryTypeEnum.PICKUP,
-        deliveryVehicle: undefined
+      error: (err) => {
+        console.error('Failed to load shipping plans', err);
       }
-    ];
+    });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadShippingPlans(page);
+    }
   }
 
   onEdit(plan: ShippingPlan): void {
-    console.log('Edit shipping plan', plan);
-    // Navigate to edit page or open edit modal
   }
 
   onDelete(plan: ShippingPlan): void {
-    console.log('Delete shipping plan', plan);
-    // Confirm then delete logic here
   }
 }

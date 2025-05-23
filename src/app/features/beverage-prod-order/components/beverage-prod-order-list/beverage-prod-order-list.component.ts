@@ -1,45 +1,51 @@
 import { Component } from '@angular/core';
 import { TableComponent } from '../../../../shared/components/table/table.component';
-import { ProductionQuantityMeasureEnum } from '../../../../shared/enums/production-quantity-measure-enum';
-import { ProdStatusEnum } from '../../../../shared/enums/prod-status-enum';
 import { BeverageProdOrder } from '../../models/beverage-prod-order.model';
+import { BeverageProdOrderService } from '../../services/beverage-prod-order.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-beverage-prod-order-list',
-  imports: [TableComponent],
+  imports: [TableComponent, CommonModule],
   templateUrl: './beverage-prod-order-list.component.html',
   styleUrl: './beverage-prod-order-list.component.css',
 })
 export class BeverageProdOrderListComponent {
-  beverageProdOrders: BeverageProdOrder[] = [
-    {
-      id: '1a2b3c',
-      prodOrderDetails: {
-        id: '1a2b3c',
-        version: 1,
-        createdDate: '2025-05-01T10:00:00Z',
-        lastModifiedDate: '2025-05-02T12:30:00Z',
-        prodDate: '2025-05-10',
-        prodQuantity: 100,
-        pricePerUnit: 2.5,
-        totalAmount: 250,
-        productionQuantityMeasure: ProductionQuantityMeasureEnum.LITERS,
-        prodStatus: ProdStatusEnum.COMPLETED,
-        batchNumber: 'BATCH-001',
-      },
-      beverageType: {
-        id: 'asdfghj',
-        beverageName: 'Lemon Juice',
-        beverageDescription: '',
-        nutritionInfo: '',
-        isActive: true
-      },
-    },
-  ];
+  beverageProdOrders: BeverageProdOrder[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
-  onEdit(order: any) {
-    console.log('Edit', order);
+  constructor(
+    private beverageProdOrderService: BeverageProdOrderService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadOrders(this.pageNumber);
   }
 
-  onDelete(order: any) {}
+  loadOrders(page: number): void {
+    this.beverageProdOrderService.getAll(page, this.pageSize).subscribe(response => {
+      this.beverageProdOrders = response.content;
+      this.pageNumber = response.page.number;
+      this.pageSize = response.page.size;
+      this.totalPages = response.page.totalPages;
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+    });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadOrders(page);
+    }
+  }
+
+  onEdit(order: BeverageProdOrder): void {
+  }
+
+  onDelete(order: BeverageProdOrder): void {
+  }
 }

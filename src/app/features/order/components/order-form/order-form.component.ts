@@ -86,17 +86,24 @@ export class OrderFormComponent {
           if (data && data.id === id) {
             this.order = { ...data };
 
-            // Patch all fields of the form with data
             this.orderForm.patchValue({
               orderDate: data.orderDate,
               orderStatus: data.orderStatus,
-              coconutWaterProdOrder: data.coconutWaterProdOrder,
-              vinegarProdOrder: data.vinegarProdOrder,
-              beverageProdOrder: data.beverageProdOrder,
               paymentDetails: data.paymentDetails,
               customer: data.customer,
               shippingPlan: data.shippingPlan,
             });
+            
+            if (data.coconutWaterProdOrder) {
+              this.orderForm.get('orderType')?.setValue('CoconutWaterProdOrder', { emitEvent: true });
+              this.orderForm.get('coconutWaterProdOrder')?.patchValue(data.coconutWaterProdOrder);
+            } else if (data.vinegarProdOrder) {
+              this.orderForm.get('orderType')?.setValue('VinegarProdOrder', { emitEvent: true });
+              this.orderForm.get('vinegarProdOrder')?.patchValue(data.vinegarProdOrder);
+            } else if (data.beverageProdOrder) {
+              this.orderForm.get('orderType')?.setValue('BeverageProdOrder', { emitEvent: true });
+              this.orderForm.get('beverageProdOrder')?.patchValue(data.beverageProdOrder);
+            }
           }
         });
 

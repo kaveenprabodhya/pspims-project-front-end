@@ -38,10 +38,9 @@
       required
     >
       <option value="" disabled>Select Measure</option>
-      <option value="GRAM">GRAM</option>
-      <option value="ML">ML</option>
-      <option value="LITER">LITER</option>
-      <option value="UNIT">UNIT</option>
+      <option *ngFor="let measure of ingredientMeasures" [value]="measure">
+        {{ measure }}
+      </option>
     </select>
   </div>
 

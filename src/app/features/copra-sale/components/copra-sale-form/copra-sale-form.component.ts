@@ -264,9 +264,7 @@ export class CopraSaleFormComponent {
       });
     }
   }
-
-  generateInvoNO() {}
-
+  
   onSubmit() {
     if (this.isEditMode) {
       this.updateSale();

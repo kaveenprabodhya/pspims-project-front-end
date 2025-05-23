@@ -1,75 +1,66 @@
 import { Component } from '@angular/core';
 import { TableComponent } from "../../../../shared/components/table/table.component";
-import { Order } from '../../models/order.model';
-import { OrderStatusEnum } from '../../../../shared/enums/order-status-enum';
-import { CoconutWaterProdOrder } from '../../../coconutwater-prod-order/models/coconutwater-prod-order.model';
 import { OrderService } from '../../services/order.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-order-list',
-  imports: [TableComponent],
+  imports: [TableComponent, CommonModule],
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.css'
 })
 export class OrderListComponent {
   orders: any[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
-  constructor(private orderService: OrderService, private router: Router) {
-    
-  }
+  constructor(private orderService: OrderService, private router: Router) {}
 
   ngOnInit(): void {
-    const rawOrders: Order[] = [
-      {
-        id: 'o1',
-        orderDate: '2025-05-20',
-        orderStatus: OrderStatusEnum.CONFIRMED,
-        paymentDetails: {
-          id: 'wertsdfg',
-          paymentAmount: 2500,
-          paymentDate: '2025-05-21',
-          paymentMethod: 'CASH',
-          paymentStatus: 'PAID',
-          invoiceNo: 'INV-123',
-        } as any,
-        coconutWaterProdOrder: {
-          id: 'qwerthgfds'
-        } as CoconutWaterProdOrder,
-        customer: {
-          id: 'bgfdzsdf',
-          firstName: 'Alice',
-          lastName: 'Smith',
-          email: 'alice@example.com',
-          address: 'City Road',
-          customerType: 'INDIVIDUAL',
-          creditLimit: 1000,
-        } as any,
-        shippingPlan: {
-          id: 'pfdsfds',
-          shippingAddress: 'Warehouse 12',
-          shippingDate: '2025-05-22',
-          shippingType: 'AIR',
-          shippingStatus: 'PENDING',
-          deliveryType: 'PICKUP',
-        } as any,
-      },
-    ];
-
-    this.orders = rawOrders.map(o => ({
-      ...o,
-      customerName: `${o.customer.firstName ?? ''} ${o.customer.lastName ?? ''}`.trim(),
-      paymentAmount: o.paymentDetails.paymentAmount,
-      shippingAddress: o.shippingPlan.shippingAddress,
-    }));
+    this.loadOrders(this.pageNumber);
   }
 
-  onEdit(order: any) {
+  loadOrders(page: number): void {
+    this.orderService.getAll(page, this.pageSize).subscribe({
+      next: (response) => {
+        this.orders = response.content.map(o => ({
+          ...o,
+          customerName: `${o.customer?.firstName ?? ''} ${o.customer?.lastName ?? ''}`.trim(),
+          paymentAmount: o.paymentDetails?.paymentAmount,
+          shippingAddress: o.shippingPlan?.shippingAddress,
+        }));
+        // console.log(this.orders);
+        
+        this.pageNumber = response.page.number;
+        this.pageSize = response.page.size;
+        this.totalPages = response.page.totalPages;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+      },
+      error: (err) => {
+        console.error('Failed to load orders', err);
+      }
+    });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadOrders(page);
+    }
+  }
+
+  onEdit(order: any): void {
     this.orderService.setSelectedOrder(order);
     this.router.navigate(['admin/dashboard/order/form', order.id]);
   }
 
-  onDelete(order: any) {
-    console.log('Delete Order:', order);
+  onDelete(order: any): void {
+    if (confirm(`Are you sure you want to delete order with ID ${order.id}?`)) {
+      this.orderService.delete(order.id).subscribe(() => {
+        this.orders = this.orders.filter(o => o.id !== order.id);
+      });
+    }
   }
 }

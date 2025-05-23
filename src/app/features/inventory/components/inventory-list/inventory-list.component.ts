@@ -1,19 +1,22 @@
 import { Component } from '@angular/core';
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { Inventory } from '../../models/inventory.model';
-import { InventoryItemTypeEnum } from '../../../../shared/enums/inventory-item-type-enum';
-import { InventoryQuantityTypeEnum } from '../../../../shared/enums/inventory-quantity-type-enum';
 import { InventoryService } from '../../services/inventory.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableComponent],
+  imports: [TableComponent, CommonModule],
   templateUrl: './inventory-list.component.html',
   styleUrl: './inventory-list.component.css'
 })
 export class InventoryListComponent {
   inventories: Inventory[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
   constructor(
     private inventoryService: InventoryService,
@@ -21,28 +24,24 @@ export class InventoryListComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loadInventory();
+    this.loadInventory(this.pageNumber);
   }
 
-  loadInventory(): void {
-    this.inventories = [
-      {
-        id: '1',
-        inventoryItemType: InventoryItemTypeEnum.CONSUMABLE,
-        inventoryQuantity: 500,
-        inventoryQuantityType: InventoryQuantityTypeEnum.KILOGRAM,
-        minimumStockLevel: 100,
-        maximumStockLevel: 1000,
-      },
-      {
-        id: '2',
-        inventoryItemType: InventoryItemTypeEnum.CONSUMABLE,
-        inventoryQuantity: 200,
-        inventoryQuantityType: InventoryQuantityTypeEnum.LITER,
-        minimumStockLevel: 50,
-        maximumStockLevel: 500,
-      },
-    ];
+  loadInventory(page: number): void {
+    this.inventoryService.getAll(page, this.pageSize).subscribe(response => {
+      this.inventories = response.content;
+
+      this.pageNumber = response.page.number;
+      this.pageSize = response.page.size;
+      this.totalPages = response.page.totalPages;
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+    });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadInventory(page);
+    }
   }
 
   onEdit(inventory: Inventory): void {
@@ -51,8 +50,10 @@ export class InventoryListComponent {
   }
 
   onDelete(item: Inventory): void {
-    console.log('Delete inventory:', item);
+    if (confirm(`Delete inventory item of type ${item.inventoryItemType}?`)) {
+      this.inventoryService.delete(item.id!).subscribe(() => {
+        this.inventories = this.inventories.filter(i => i.id !== item.id);
+      });
+    }
   }
-
-
 }

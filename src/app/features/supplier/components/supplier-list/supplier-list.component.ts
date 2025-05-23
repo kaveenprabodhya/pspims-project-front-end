@@ -1,64 +1,50 @@
 import { Component } from '@angular/core';
 import { TableComponent } from "../../../../shared/components/table/table.component";
-import { Agent } from '../../../agent/models/agent.model';
-import { SupplierPaymentTermsEnum } from '../../../../shared/enums/supplier-payment-terms-enum';
-import { SupplierStatusEnum } from '../../../../shared/enums/supplier-status-enum';
 import { Supplier } from '../../models/supplier.model';
 import { SupplierService } from '../../services/supplier.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-supplier-list',
-  imports: [TableComponent],
+  imports: [CommonModule, TableComponent],
   templateUrl: './supplier-list.component.html',
   styleUrl: './supplier-list.component.css'
 })
 export class SupplierListComponent {
   suppliers: Supplier[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
-  constructor(private supplierService: SupplierService, private router: Router) {
-    
-  }
+  constructor(
+    private supplierService: SupplierService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadSuppliers();
+    this.loadSuppliers(this.pageNumber);
   }
 
-  loadSuppliers(): void {
-    const rawSuppliers: Supplier[] = [
-      {
-        id: '1',
-        firstName: 'Alice',
-        lastName: 'Smith',
-        email: 'alice@example.com',
-        address: '123 Coconut St',
-        supplierStatus: SupplierStatusEnum.ACTIVE,
-        supplierPaymentTerms: SupplierPaymentTermsEnum.NET_30,
-        agent: {
-          id: 'agent1',
-          username: 'agent_001',
-        } as Agent,
-      },
-      {
-        id: '2',
-        firstName: 'Bob',
-        lastName: 'Jones',
-        email: 'bob@example.com',
-        address: '456 Palm Ave',
-        supplierStatus: SupplierStatusEnum.INACTIVE,
-        supplierPaymentTerms: SupplierPaymentTermsEnum.PREPAID,
-        agent: {
-          id: 'agent2',
-          username: 'agent_002',
-        } as Agent,
-      },
-    ];
+  loadSuppliers(page: number): void {
+    this.supplierService.getAll(page, this.pageSize).subscribe(response => {
+      this.suppliers = response.content.map(s => ({
+        ...s,
+        name: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim()
+      }));
 
-    // Append full name
-    this.suppliers = rawSuppliers.map(s => ({
-      ...s,
-      name: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim()
-    }));
+      this.pageNumber = response.page.number;
+      this.pageSize = response.page.size;
+      this.totalPages = response.page.totalPages;
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
+    });
+  }
+
+  goToPage(page: number) {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadSuppliers(page);
+    }
   }
 
   onEdit(supplier: Supplier): void {
@@ -67,7 +53,10 @@ export class SupplierListComponent {
   }
 
   onDelete(supplier: Supplier): void {
-    console.log('Delete Supplier:', supplier);
-    // Add delete logic
+    if (confirm(`Are you sure you want to delete ${supplier.firstName} ${supplier.lastName}?`)) {
+      this.supplierService.delete(supplier.id!).subscribe(() => {
+        this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
+      });
+    }
   }
 }

@@ -1,69 +1,62 @@
 import { Component } from '@angular/core';
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { SupplierPaymentDetails } from '../../models/supplier-payment-details.model';
-import { PaymentDetails } from '../../../payment-details/models/payment-details.model';
-import { Supplier } from '../../../supplier/models/supplier.model';
-import { PaymentStatusEnum } from '../../../../shared/enums/payment-status-enum';
-import { PaymentMethodEnum } from '../../../../shared/enums/payment-method-enum';
-import { SupplierPaymentTermsEnum } from '../../../../shared/enums/supplier-payment-terms-enum';
-import { SupplierStatusEnum } from '../../../../shared/enums/supplier-status-enum';
+import { SupplierPaymentDetailsService } from '../../services/supplier-payment-details.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-supplier-payment-details-list',
-  imports: [TableComponent],
+  imports: [TableComponent, CommonModule],
   templateUrl: './supplier-payment-details-list.component.html',
   styleUrl: './supplier-payment-details-list.component.css'
 })
 export class SupplierPaymentDetailsListComponent {
   supplierPayments: SupplierPaymentDetails[] = [];
+  pageNumber: number = 0;
+  pageSize: number = 6;
+  totalPages: number = 0;
+  pages: number[] = [];
 
-  constructor() {}
+  constructor(
+    private supplierPaymentDetailsService: SupplierPaymentDetailsService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadSupplierPayments();
+    this.loadSupplierPayments(this.pageNumber);
   }
 
-  loadSupplierPayments(): void {
-    const rawSupplierPayments: SupplierPaymentDetails[] = [
-      {
-        id: '1',
-        paymentDetails: {
-          id: 'qwertyu',
-          paymentStatus: PaymentStatusEnum.PAID,
-          paymentDate: '2025-05-20',
-          paymentAmount: 1500,
-          invoiceNo: 'INV-001',
-          paymentMethod: PaymentMethodEnum.CREDIT_CARD
-        },
-        supplier: {
-          id: 'sup1',
-          firstName: 'Supplier',
-          lastName: 'One',
-          email: 'sup1@example.com',
-          address: '',
-          supplierPaymentTerms: SupplierPaymentTermsEnum.COD,
-          supplierStatus: SupplierStatusEnum.ACTIVE,
-          agent: null as any
-        }
+  loadSupplierPayments(page: number): void {
+    this.supplierPaymentDetailsService.getAll(page, this.pageSize).subscribe({
+      next: (response) => {
+        this.supplierPayments = response.content.map(c => ({
+          ...c,
+          supplier: {
+            ...c.supplier,
+            name: `${c.supplier.firstName ?? ''} ${c.supplier.lastName ?? ''}`.trim()
+          }
+        }));
+        this.pageNumber = response.page.number;
+        this.pageSize = response.page.size;
+        this.totalPages = response.page.totalPages;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i);
       },
-    ];
-
-    this.supplierPayments = rawSupplierPayments.map(c => ({
-      ...c,
-      supplier: {
-        ...c.supplier,
-        name: `${c.supplier.firstName ?? ''} ${c.supplier.lastName ?? ''}`.trim()
+      error: (error) => {
+        console.error('Error loading supplier payments:', error);
       }
-    }));
-    
-    
+    });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadSupplierPayments(page);
+    }
   }
 
   onEdit(item: SupplierPaymentDetails): void {
-    console.log('Edit supplier payment', item);
   }
 
   onDelete(item: SupplierPaymentDetails): void {
-    console.log('Delete supplier payment', item);
   }
 }

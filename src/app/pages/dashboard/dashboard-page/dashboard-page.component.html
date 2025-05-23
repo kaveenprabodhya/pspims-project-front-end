@@ -1,1 +1,43 @@
-<p>dashboard-page works!</p>
+<div class="container py-4">
+    <h2 class="mb-4 text-center">Dashboard Overview</h2>
+  
+    <!-- Main centered chart -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0 text-center">Overall Sales (Line Chart)</h5>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center" style="height: 350px;">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Two smaller charts side by side -->
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0 text-center">Sales Distribution (Pie Chart)</h5>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0 text-center">Monthly Sales (Bar Chart)</h5>
+          </div>
+          <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

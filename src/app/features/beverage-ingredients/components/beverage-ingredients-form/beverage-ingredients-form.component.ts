@@ -26,6 +26,8 @@ export class BeverageIngredientsFormComponent {
   
   isEditMode = false;
 
+  ingredientMeasures = Object.values(IngredientMeasure);
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
