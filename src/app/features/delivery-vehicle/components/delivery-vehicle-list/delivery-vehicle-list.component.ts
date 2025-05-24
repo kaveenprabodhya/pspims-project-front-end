@@ -27,6 +27,9 @@ export class DeliveryVehicleListComponent {
 
   ngOnInit(): void {
     this.loadVehicles(this.pageNumber);
+    this.deliveryVehicleService.refreshDeliveryVehicle$.subscribe(() => {
+      this.loadVehicles(this.pageNumber);
+    });
   }
 
   loadVehicles(page: number): void {
@@ -60,6 +63,7 @@ export class DeliveryVehicleListComponent {
       this.deliveryVehicleService.delete(vehicle.id!).subscribe(() => {
         this.deliveryVehicles = this.deliveryVehicles.filter(v => v.id !== vehicle.id);
       });
+      this.deliveryVehicleService.triggerRefresh();
     }
   }
 }

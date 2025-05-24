@@ -1,16 +1,14 @@
 <h5 class="mb-3">{{ isEditMode ? 'Edit Ingredient' : 'Add New Ingredient' }}</h5>
 
-<form #ingredientForm="ngForm" (ngSubmit)="onSubmit()" class="mt-3">
+<form [formGroup]="ingredientForm" (ngSubmit)="onSubmit()" class="mt-3">
   <div class="mb-3">
     <label for="ingredientName" class="form-label">Ingredient Name</label>
     <input
       type="text"
       class="form-control"
       id="ingredientName"
-      name="ingredientName"
-      [(ngModel)]="ingredient.ingredientName"
+      formControlName="ingredientName"
       placeholder="Enter name"
-      required
     />
   </div>
 
@@ -20,23 +18,14 @@
       type="number"
       class="form-control"
       id="measureAmount"
-      name="measureAmount"
-      min="0"
-      [(ngModel)]="ingredient.measureAmount"
+      formControlName="measureAmount"
       placeholder="Enter amount"
-      required
     />
   </div>
 
   <div class="mb-3">
     <label for="ingredientMeasure" class="form-label">Ingredient Measure</label>
-    <select
-      class="form-select"
-      id="ingredientMeasure"
-      name="ingredientMeasure"
-      [(ngModel)]="ingredient.ingredientMeasure"
-      required
-    >
+    <select class="form-select" id="ingredientMeasure" formControlName="ingredientMeasure">
       <option value="" disabled>Select Measure</option>
       <option *ngFor="let measure of ingredientMeasures" [value]="measure">
         {{ measure }}
@@ -45,16 +34,10 @@
   </div>
 
   <div class="mb-3">
-    <label for="beverageType" class="form-label">Beverage Type</label>
-    <select
-      class="form-select"
-      id="beverageType"
-      name="beverageType"
-      [(ngModel)]="ingredient.beverageType"
-      required
-    >
-      <option [ngValue]="null" disabled>Select Beverage Type</option>
-      <option *ngFor="let type of beverageTypes" [value]="type.id">
+    <label  class="form-label">Beverage Type</label>
+    <select class="form-select" id="beverageType" formControlName="beverageType">
+      <option value="null" selected disabled>Select Beverage Type</option>
+      <option *ngFor="let type of beverageTypes" [ngValue]="type">
         {{ type.beverageName }}
       </option>
     </select>

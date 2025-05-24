@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { CoconutWaterProdOrder } from '../models/coconutwater-prod-order.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
 
@@ -14,7 +14,14 @@ export class CoconutwaterProdOrderService {
   private selectedOrder = new BehaviorSubject<CoconutWaterProdOrder | null>(null);
   selectedOrder$ = this.selectedOrder.asObservable();
 
+  private _refreshCoconutwaterProdOrder$ = new Subject<void>();
+  refreshCoconutwaterProdOrder$ = this._refreshCoconutwaterProdOrder$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshCoconutwaterProdOrder$.next();
+  }
 
   // Selection tracking
   setSelectedOrder(order: CoconutWaterProdOrder): void {

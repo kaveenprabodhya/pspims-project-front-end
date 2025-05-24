@@ -25,6 +25,9 @@ export class VinegarProdOrderListComponent {
 
   ngOnInit(): void {
     this.loadVinegarProdOrders(this.pageNumber);
+    this.vinegarProdOrderService.refreshVinegarProdOrders$.subscribe(() => {
+      this.loadVinegarProdOrders(this.pageNumber);
+    });
   }
 
   loadVinegarProdOrders(page: number): void {

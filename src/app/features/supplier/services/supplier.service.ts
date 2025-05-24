@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Supplier } from '../models/supplier.model';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -15,7 +15,14 @@ export class SupplierService {
   private selectedSupplier = new BehaviorSubject<Supplier | null>(null);
   selectedSupplier$ = this.selectedSupplier.asObservable();
 
+  private _refreshSupplier$ = new Subject<void>();
+  refreshSupplier$ = this._refreshSupplier$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshSupplier$.next();
+  }
 
   setSelectedSupplier(supplier: Supplier) {
     this.selectedSupplier.next(supplier);

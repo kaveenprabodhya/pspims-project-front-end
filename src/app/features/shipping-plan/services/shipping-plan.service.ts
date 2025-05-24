@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ShippingPlan } from '../models/shipping-plan.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
@@ -15,7 +15,14 @@ export class ShippingPlanService {
   private selectedShippingPlan = new BehaviorSubject<ShippingPlan | null>(null);
   selectedShippingPlan$ = this.selectedShippingPlan.asObservable();
 
+  private _refreshShippingPlan$ = new Subject<void>();
+  refreshShippingPlan$ = this._refreshShippingPlan$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshShippingPlan$.next();
+  }
 
   setSelectedShippingPlan(plan: ShippingPlan) {
     this.selectedShippingPlan.next(plan);

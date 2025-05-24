@@ -1,6 +1,8 @@
 export enum IngredientMeasure {
-  GRAM = 'GRAM',
-  ML = 'ML',
-  LITER = 'LITER',
-  UNIT = 'UNIT'
+  GRAMS = 'GRAMS',
+  KILOGRAMS = 'KILOGRAMS',
+  LITERS = 'LITERS',
+  MILLILITERS = 'MILLILITERS',
+  SPOONS = 'SPOONS',
+  CUPS = 'CUPS'
 }

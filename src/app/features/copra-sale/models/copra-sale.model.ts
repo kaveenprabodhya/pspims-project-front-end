@@ -9,7 +9,7 @@ export interface CopraSale {
   lastModifiedDate?: string;
   saleQuantity: number;
   pricePerQuantity: number;
-  totalSaleAmount?: number;
+  totalSaleAmount: number;
   saleDate: string;
   customer: Customer;
   shippingPlan: ShippingPlan;

@@ -26,6 +26,9 @@ export class CoconutPurchaseListComponent {
 
   ngOnInit(): void {
     this.loadPurchases(this.pageNumber);
+    this.purchaseService.refreshCoconutPurchase$.subscribe(() => {
+      this.loadPurchases(this.pageNumber);
+    });
   }
 
   loadPurchases(page: number): void {
@@ -59,6 +62,7 @@ export class CoconutPurchaseListComponent {
       this.purchaseService.delete(item.id!).subscribe(() => {
         this.coconutPurchases = this.coconutPurchases.filter(p => p.id !== item.id);
       });
+      this.purchaseService.triggerRefresh();
     }
   }
 }

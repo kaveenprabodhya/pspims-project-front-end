@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { CopraSale } from '../models/copra-sale.model';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -14,7 +14,14 @@ export class CopraSaleService {
   private selectedSale = new BehaviorSubject<CopraSale | null>(null);
   selectedSale$ = this.selectedSale.asObservable();
 
+  private _refreshCopraSale$ = new Subject<void>();
+  refreshCopraSale$ = this._refreshCopraSale$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshCopraSale$.next();
+  }
 
   // Selection
   setSelectedSale(sale: CopraSale): void {

@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { VehicleTypeEnum } from '../../../../shared/enums/vehicle-type-enum.enum';
 import { VehicleAvailabilityStatusEnum } from '../../../../shared/enums/vehicle-availability-status-enum';
 import { CommonModule } from '@angular/common';
@@ -12,7 +17,7 @@ import { DeliveryVehicle } from '../../models/delivery-vehicle.model';
   selector: 'app-delivery-vehicle-form',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './delivery-vehicle-form.component.html',
-  styleUrl: './delivery-vehicle-form.component.css'
+  styleUrl: './delivery-vehicle-form.component.css',
 })
 export class DeliveryVehicleFormComponent implements OnInit {
   vehicleForm: FormGroup;
@@ -30,19 +35,24 @@ export class DeliveryVehicleFormComponent implements OnInit {
     this.vehicleForm = this.fb.group({
       vehicleRegNo: ['', Validators.required],
       vehicleType: ['', Validators.required],
-      availabilityStatus: ['', Validators.required]
+      availabilityStatus: ['', Validators.required],
     });
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.isEditMode = true;
-        this.vehicleService.selectedVehicle$.subscribe(data => {
+        this.vehicleService.selectedVehicle$.subscribe((data) => {
           if (data && data.id === id) {
             this.vehicle = { ...data };
             this.vehicleForm.patchValue(this.vehicle);
+          } else {
+            this.vehicleService.getById(id).subscribe(data => {
+              this.vehicle = data;
+              this.vehicleForm.patchValue(data);
+            });
           }
         });
       } else {
@@ -52,9 +62,11 @@ export class DeliveryVehicleFormComponent implements OnInit {
       }
     });
 
-    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
-      this.resetFormOnRoute();
-    });
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.resetFormOnRoute();
+      });
 
     this.resetFormOnRoute();
   }
@@ -63,7 +75,7 @@ export class DeliveryVehicleFormComponent implements OnInit {
     return {
       vehicleRegNo: '',
       vehicleType: '' as VehicleTypeEnum,
-      availabilityStatus: '' as VehicleAvailabilityStatusEnum
+      availabilityStatus: '' as VehicleAvailabilityStatusEnum,
     };
   }
 
@@ -71,20 +83,35 @@ export class DeliveryVehicleFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
-      this.vehicleService.selectedVehicle$.subscribe(data => {
-        if (data) this.vehicle = { ...data };
+      this.vehicleService.selectedVehicle$.subscribe((data) => {
+        if (data) {
+          this.vehicle = { ...data };
+        } else {
+          this.vehicleService.getById(id).subscribe(data => {
+            this.vehicle = data;
+            this.vehicleForm.patchValue(data);
+          });
+        }
       });
     } else {
       this.isEditMode = false;
       this.vehicle = this.initEmptyVehicle();
     }
   }
-  
+
   onSubmit() {
-    if (this.isEditMode) {
-      console.log('Updating vehicle:', this.vehicle);
+    if (this.vehicleForm.invalid) return;
+
+    const formValue = this.vehicleForm.value;
+
+    if (this.isEditMode && this.vehicle.id) {
+      this.vehicleService.update(this.vehicle.id, formValue).subscribe(() => {
+        this.resetForm();
+      });
     } else {
-      console.log('Adding vehicle:', this.vehicle);
+      this.vehicleService.create(formValue).subscribe(() => {
+        this.resetForm();
+      });
     }
     this.resetForm();
   }
@@ -92,6 +119,7 @@ export class DeliveryVehicleFormComponent implements OnInit {
   resetForm() {
     this.vehicle = this.initEmptyVehicle();
     this.vehicleService.clearSelectedVehicle();
+    this.vehicleService.triggerRefresh();
     this.router.navigate(['/admin/dashboard/delivery-vehicle/list']);
   }
 }

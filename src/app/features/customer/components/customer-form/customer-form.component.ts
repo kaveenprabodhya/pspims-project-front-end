@@ -59,8 +59,11 @@ export class CustomerFormComponent {
               lastName: data.lastName,
             });
           } else {
-            // Optionally: fetch by id from backend
-            // this.purchaseService.getById(id).subscribe(p => this.purchase = p);
+            this.customerService.getById(id).subscribe((customer) => {
+              this.customer = customer;
+              this.customerForm.patchValue(customer);
+              this.customerService.setSelectedCustomer(customer);
+            });
           }
         });
       } else {
@@ -99,7 +102,11 @@ export class CustomerFormComponent {
         if (data) {
           this.customer = { ...data };
         } else {
-          // Optionally fetch by ID if someone typed the URL directly
+          this.customerService.getById(id).subscribe((customer) => {
+            this.customer = customer;
+            this.customerForm.patchValue(customer);
+            this.customerService.setSelectedCustomer(customer);
+          });
         }
       });
     } else {
@@ -109,6 +116,10 @@ export class CustomerFormComponent {
   }
 
   onSubmit() {
+    if (this.customerForm.invalid) return;
+
+    this.customer = { ...this.customer, ...this.customerForm.value };
+
     if (this.isEditMode) {
       this.updateCustomer();
     } else {
@@ -117,18 +128,38 @@ export class CustomerFormComponent {
   }
 
   addCustomer() {
-    console.log('Adding customer:', this.customer);
-    this.resetForm();
+    this.customerService.create(this.customer).subscribe({
+      next: (created) => {
+        this.customerService.triggerRefresh();
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error adding customer', err);
+      },
+    });
   }
 
   updateCustomer() {
-    console.log('Updating customer:', this.customer);
-    this.resetForm();
+    if (!this.customer.id) {
+      console.error('Customer ID is missing for update');
+      return;
+    }
+    this.customerService.update(this.customer.id, this.customer).subscribe({
+      next: (updated) => {
+        this.customerService.triggerRefresh();
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error updating customer', err);
+      },
+    });
   }
 
   resetForm() {
     this.customer = this.initEmptyCustomer();
+    this.customerForm.reset(this.customer);
     this.customerService.clearSelectedCustomer();
+    this.customerService.triggerRefresh();
     this.router.navigate(['admin/dashboard/customer/list']);
   }
 }

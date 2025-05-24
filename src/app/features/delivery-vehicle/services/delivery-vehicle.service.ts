@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { DeliveryVehicle } from '../models/delivery-vehicle.model';
 import { PagedResponse } from '../../../shared/page-response';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -14,7 +14,14 @@ export class DeliveryVehicleService {
   private selectedVehicle = new BehaviorSubject<DeliveryVehicle | null>(null);
   selectedVehicle$ = this.selectedVehicle.asObservable();
 
+  private _refreshDeliveryVehicle$ = new Subject<void>();
+  refreshDeliveryVehicle$ = this._refreshDeliveryVehicle$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshDeliveryVehicle$.next();
+  }
 
   // Manage selected vehicle
   setSelectedVehicle(vehicle: DeliveryVehicle): void {

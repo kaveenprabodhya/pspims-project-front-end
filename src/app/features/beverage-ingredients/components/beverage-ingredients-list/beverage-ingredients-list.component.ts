@@ -25,6 +25,10 @@ export class BeverageIngredientsListComponent {
 
   ngOnInit(): void {
     this.loadIngredients(this.pageNumber);
+    this.ingredientService.refreshIngredients$.subscribe(() => {
+      this.loadIngredients(this.pageNumber);
+    });
+    
   }
 
   loadIngredients(page: number): void {
@@ -54,6 +58,7 @@ export class BeverageIngredientsListComponent {
       this.ingredientService.delete(ingredient.id!).subscribe(() => {
         this.beverageIngredients = this.beverageIngredients.filter(i => i.id !== ingredient.id);
       });
+      this.ingredientService.triggerRefresh();
     }
   }
 }

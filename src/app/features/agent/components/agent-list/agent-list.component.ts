@@ -40,6 +40,9 @@ export class AgentListComponent {
 
   ngOnInit(): void {
     this.loadAgents(this.pageNumber);
+    this.agentService.refreshAgents$.subscribe(() => {
+      this.loadAgents(this.pageNumber);
+    });
   }
 
   loadAgents(page: number): void {
@@ -85,7 +88,7 @@ export class AgentListComponent {
 
   onEdit(agent: Agent): void {
     this.agentService.setSelectedAgent(agent);
-    this.router.navigate(['/admin/dashboard/agent/form', agent.id]);
+    this.router.navigate(['/admin/dashboard/agent/main/form', agent.id]);
   }
 
   onDelete(agent: Agent): void {
@@ -93,6 +96,7 @@ export class AgentListComponent {
       this.agentService.deleteAgent(agent.id!).subscribe(() => {
         this.agents = this.agents.filter((a) => a.id !== agent.id);
       });
+      this.agentService.triggerAgentRefresh();
     }
   }
 }

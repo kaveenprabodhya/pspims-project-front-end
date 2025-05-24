@@ -42,7 +42,10 @@ export class BeverageTypeFormComponent {
         if (data) {
           this.beverageType = { ...data };
         } else {
-          // Optionally fetch by ID if someone typed the URL directly
+          this.beverageTypeService.getById(id).subscribe((fetchedData) => {
+            this.beverageType = { ...fetchedData };
+            this.beverageTypeService.setSelectedBeverageType(fetchedData);
+          });
         }
       });
     } else {
@@ -59,8 +62,10 @@ export class BeverageTypeFormComponent {
         if (data) {
           this.beverageType = { ...data };
         } else {
-          // Optionally fetch by ID if needed:
-          // this.beverageTypeService.getById(id).subscribe(bt => this.beverageType = bt);
+          this.beverageTypeService.getById(id).subscribe((fetchedData) => {
+            this.beverageType = { ...fetchedData };
+            this.beverageTypeService.setSelectedBeverageType(fetchedData);
+          });
         }
       });
     } else {
@@ -90,22 +95,37 @@ export class BeverageTypeFormComponent {
   }
 
   addBeverageType() {
-    // this.beverageTypeService.add(this.beverageType).subscribe(() => {
-    //   // reset form or navigate after success
-    // });
-    this.resetForm();
+    this.beverageTypeService.create(this.beverageType).subscribe({
+      next: () => {
+        this.beverageTypeService.triggerRefresh();
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error adding beverage type:', err);
+      },
+    });
   }
 
   updateBeverageType() {
-    // this.beverageTypeService.update(this.beverageType.id!, this.beverageType).subscribe(() => {
-    //   // reset form or navigate after success
-    // });
-    this.resetForm();
+    if (!this.beverageType.id) {
+      console.error('No ID found for update');
+      return;
+    }
+    this.beverageTypeService.update(this.beverageType.id, this.beverageType).subscribe({
+      next: () => {
+        this.beverageTypeService.triggerRefresh();
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error updating beverage type:', err);
+      },
+    });
   }
 
   resetForm() {
     this.beverageType = this.initEmptyBeverageType();
     this.beverageTypeService.clearSelectedBeverageType();
+    this.beverageTypeService.triggerRefresh();
     this.router.navigate(['admin/dashboard/beverage-type/list'], { relativeTo: this.route.parent });
   }
 }

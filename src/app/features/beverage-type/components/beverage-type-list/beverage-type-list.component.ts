@@ -25,6 +25,9 @@ export class BeverageTypeListComponent {
 
   ngOnInit(): void {
     this.loadBeverageTypes(this.pageNumber);
+    this.beverageTypeService.refreshBeverageType$.subscribe(() => {
+      this.loadBeverageTypes(this.pageNumber);
+    });
   }
 
   loadBeverageTypes(page: number): void {
@@ -54,6 +57,7 @@ export class BeverageTypeListComponent {
       this.beverageTypeService.delete(type.id!).subscribe(() => {
         this.beverageTypes = this.beverageTypes.filter(bt => bt.id !== type.id);
       });
+      this.beverageTypeService.triggerRefresh();
     }
   }
 }

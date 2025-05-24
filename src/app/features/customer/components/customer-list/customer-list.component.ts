@@ -26,6 +26,9 @@ export class CustomerListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomers(this.pageNumber);
+    this.customerService.refreshCustomer$.subscribe(() => {
+      this.loadCustomers(this.pageNumber);
+    });
   }
 
   loadCustomers(page: number): void {
@@ -77,6 +80,7 @@ export class CustomerListComponent implements OnInit {
       this.customerService.delete(customer.id!).subscribe(() => {
         this.customers = this.customers.filter(c => c.id !== customer.id);
       });
+      this.customerService.triggerRefresh();
     }
   }
 }

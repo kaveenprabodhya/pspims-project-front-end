@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PagedResponse } from '../../../shared/page-response';
 import { BeverageProdOrder } from '../models/beverage-prod-order.model';
 
@@ -12,7 +12,14 @@ export class BeverageProdOrderService {
 
   private baseUrl = `${environment.apiUrl}/beverageProdOrders`;
 
+  private _refreshOBeverageProdOrder$ = new Subject<void>();
+  refreshOBeverageProdOrder$ = this._refreshOBeverageProdOrder$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshOBeverageProdOrder$.next();
+  }
 
   // Get all with pagination
   getAll(pageNumber: number = 0, pageSize: number = 10): Observable<PagedResponse<BeverageProdOrder>> {

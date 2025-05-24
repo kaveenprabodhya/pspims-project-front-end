@@ -28,6 +28,9 @@ export class ShippingPlanListComponent {
 
   ngOnInit(): void {
     this.loadShippingPlans(this.pageNumber);
+    this.shippingPlanService.refreshShippingPlan$.subscribe(() => {
+      this.loadShippingPlans(this.pageNumber);
+    });
   }
 
   loadShippingPlans(page: number): void {

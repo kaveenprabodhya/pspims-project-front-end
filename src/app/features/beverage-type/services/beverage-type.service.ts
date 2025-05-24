@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BeverageType } from '../models/beverage-type.model';
 import { PagedResponse } from '../../../shared/page-response';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -15,7 +15,14 @@ export class BeverageTypeService {
   private selectedBeverageType = new BehaviorSubject<BeverageType | null>(null);
   selectedBeverageType$ = this.selectedBeverageType.asObservable();
 
+  private _refreshBeverageType$ = new Subject<void>();
+  refreshBeverageType$ = this._refreshBeverageType$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshBeverageType$.next();
+  }
 
   // Selection handling
   setSelectedBeverageType(beverageType: BeverageType) {

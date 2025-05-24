@@ -1,6 +1,6 @@
 export enum CoconutQualityGrade {
-    HIGH = 'HIGH',
-    MEDIUM = 'MEDIUM',
-    LOW = 'LOW',
-  }
-  
+  A = 'A', // Premium
+  B = 'B', // Good
+  C = 'C', // Fair
+  D = 'D', // Poor
+}

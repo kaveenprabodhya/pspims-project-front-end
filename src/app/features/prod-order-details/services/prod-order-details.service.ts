@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ProdOrderDetails } from '../models/prod-order-details.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
@@ -15,7 +15,14 @@ export class ProdOrderDetailsService {
   private selectedProdOrderDetails = new BehaviorSubject<ProdOrderDetails | null>(null);
   selectedProdOrderDetails$ = this.selectedProdOrderDetails.asObservable();
 
+  private _refreshProdOrderDetails$ = new Subject<void>();
+  refreshProdOrderDetails$ = this._refreshProdOrderDetails$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshProdOrderDetails$.next();
+  }
 
   setSelectedProdOrderDetails(details: ProdOrderDetails) {
     this.selectedProdOrderDetails.next(details);

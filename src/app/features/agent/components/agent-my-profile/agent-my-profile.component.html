@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="card shadow-lg">
+      <div class="row g-0">
+        <div
+          class="col-md-4 bg-primary text-white d-flex flex-column justify-content-center align-items-center p-4"
+        >
+          <h4 class="mb-0">{{ user.firstName }} {{ user.lastName }}</h4>
+          <p class="mb-0">{{ user.role }}</p>
+        </div>
+
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">Profile Information</h5>
+            <hr />
+            <div class="row mb-3">
+              <div class="col-sm-4"><strong>Email:</strong></div>
+              <div class="col-sm-8">{{ user.email }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-4"><strong>Username:</strong></div>
+              <div class="col-sm-8">{{ user.username }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-4"><strong>Address:</strong></div>
+              <div class="col-sm-8">{{ user.address }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-4"><strong>Department:</strong></div>
+              <div class="col-sm-8">{{ user.agentDepartment }}</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-4">
+                <strong>Performance Rate:</strong>
+              </div>
+              <div class="col-sm-8">{{ user.performanceRate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CoconutPurchase } from '../models/coconut-purchase.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
@@ -14,7 +14,14 @@ export class CoconutPurchaseService {
   private selectedPurchase = new BehaviorSubject<CoconutPurchase | null>(null);
   selectedPurchase$ = this.selectedPurchase.asObservable();
 
+  private _refreshCoconutPurchase$ = new Subject<void>();
+  refreshCoconutPurchase$ = this._refreshCoconutPurchase$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshCoconutPurchase$.next();
+  }
 
   // Selection tracking
   setSelectedPurchase(purchase: CoconutPurchase): void {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Customer } from '../models/customer.model';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -14,7 +14,14 @@ export class CustomerService {
   private selectedCustomer = new BehaviorSubject<Customer | null>(null);
   selectedCustomer$ = this.selectedCustomer.asObservable();
 
+  private _refreshCustomer$ = new Subject<void>();
+  refreshCustomer$ = this._refreshCustomer$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshCustomer$.next();
+  }
 
   // Selected customer management
   setSelectedCustomer(customer: Customer): void {

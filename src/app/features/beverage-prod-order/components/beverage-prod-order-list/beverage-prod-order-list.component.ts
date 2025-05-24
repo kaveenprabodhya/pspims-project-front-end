@@ -25,6 +25,9 @@ export class BeverageProdOrderListComponent {
 
   ngOnInit(): void {
     this.loadOrders(this.pageNumber);
+    this.beverageProdOrderService.refreshOBeverageProdOrder$.subscribe(() => {
+      this.loadOrders(this.pageNumber);
+    });
   }
 
   loadOrders(page: number): void {

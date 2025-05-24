@@ -123,18 +123,19 @@ export class OrderFormComponent {
     this.onOrderTypeChange();
     this.loadDeliveryVehicles();
     this.loadCustomers();
-    this.shippingPlanForm
-      .get('deliveryType')
-      ?.valueChanges.subscribe((type) => {
-        const vehicleControl = this.shippingPlanForm.get('deliveryVehicle');
-        if (type === DeliveryTypeEnum.PICKUP) {
-          vehicleControl?.clearValidators();
-          vehicleControl?.setValue(null); // Optional: clear selection
-        } else {
-          vehicleControl?.setValidators([Validators.required]);
-        }
-        vehicleControl?.updateValueAndValidity();
-      });
+
+    // this.shippingPlanForm
+    //   .get('deliveryType')
+    //   ?.valueChanges.subscribe((type) => {
+    //     const vehicleControl = this.shippingPlanForm.get('deliveryVehicle');
+    //     if (type === DeliveryTypeEnum.PICKUP) {
+    //       vehicleControl?.clearValidators();
+    //       vehicleControl?.setValue(null); // Optional: clear selection
+    //     } else {
+    //       vehicleControl?.setValidators([Validators.required]);
+    //     }
+    //     vehicleControl?.updateValueAndValidity();
+    //   });
   }
 
   initEmptyOrder(): Order {
@@ -377,6 +378,7 @@ export class OrderFormComponent {
   resetForm() {
     this.order = this.initEmptyOrder();
     this.orderForm.reset();
+    this.orderService.triggerRefresh();
     this.orderService.clearSelectedOrder();
     this.router.navigate(['admin/dashboard/order/list']);
   }

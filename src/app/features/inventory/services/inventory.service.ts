@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Inventory } from '../models/inventory.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
@@ -16,7 +16,14 @@ export class InventoryService {
   private selectedInventory = new BehaviorSubject<Inventory | null>(null);
   selectedInventory$ = this.selectedInventory.asObservable();
 
+  private _refreshInventory$ = new Subject<void>();
+  refreshInventory$ = this._refreshInventory$.asObservable();
+
   constructor(private http: HttpClient) { }
+
+  triggerRefresh() {
+    this._refreshInventory$.next();
+  }
 
   setSelectedInventory(inventory: Inventory | null) {
     this.selectedInventory.next(inventory);

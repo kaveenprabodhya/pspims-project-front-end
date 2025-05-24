@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { VinegarProdOrder } from '../models/vinegar-prod-order.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
 
@@ -15,7 +15,14 @@ export class VinegarProdOrderService {
     new BehaviorSubject<VinegarProdOrder | null>(null);
   selectedVinegarProdOrder$ = this.selectedVinegarProdOrder.asObservable();
 
+  private _refreshVinegarProdOrders$ = new Subject<void>();
+  refreshVinegarProdOrders$ = this._refreshVinegarProdOrders$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshVinegarProdOrders$.next();
+  }
 
   setSelectedVinegarProdOrder(order: VinegarProdOrder): void {
     this.selectedVinegarProdOrder.next(order);

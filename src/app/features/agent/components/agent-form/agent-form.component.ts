@@ -46,6 +46,11 @@ export class AgentFormComponent {
       this.agentService.selectedAgent$.subscribe((data) => {
         if (data) {
           this.agent = { ...data };
+        } else {
+          this.agentService.getAgentById(id).subscribe((fetchedAgent) => {
+            this.agent = { ...fetchedAgent };
+            this.agentService.setSelectedAgent(fetchedAgent); // optional sync
+          });
         }
       });
     }
@@ -112,6 +117,7 @@ export class AgentFormComponent {
   resetForm() {
     this.agent = this.initEmptyAgent();
     this.agentService.clearSelectedAgent();
-    this.router.navigate(['admin/dashboard/agents/list']);
+    this.agentService.triggerAgentRefresh();
+    this.router.navigate(['admin/dashboard/agent/list']);
   }
 }

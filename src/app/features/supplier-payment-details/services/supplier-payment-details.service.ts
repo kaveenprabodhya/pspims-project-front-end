@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { SupplierPaymentDetails } from '../models/supplier-payment-details.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PagedResponse } from '../../../shared/page-response';
@@ -15,7 +15,14 @@ export class SupplierPaymentDetailsService {
   private selectedSupplierPaymentDetails = new BehaviorSubject<SupplierPaymentDetails | null>(null);
   selectedSupplierPaymentDetails$ = this.selectedSupplierPaymentDetails.asObservable();
 
+  private _refreshSupplierPaymentDetails$ = new Subject<void>();
+  refreshSupplierPaymentDetails$ = this._refreshSupplierPaymentDetails$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshSupplierPaymentDetails$.next();
+  }
 
   setSelectedSupplierPaymentDetails(details: SupplierPaymentDetails) {
     this.selectedSupplierPaymentDetails.next(details);

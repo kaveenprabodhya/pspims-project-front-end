@@ -25,6 +25,9 @@ export class ProdOrderDetailsListComponent {
 
   ngOnInit(): void {
     this.loadProdOrderDetails(this.pageNumber);
+    this.prodOrderDetailsService.refreshProdOrderDetails$.subscribe(() => {
+      this.loadProdOrderDetails(this.pageNumber);
+    });
   }
 
   loadProdOrderDetails(page: number): void {
@@ -49,5 +52,6 @@ export class ProdOrderDetailsListComponent {
   }
 
   onDelete(prodOrderDetails: ProdOrderDetails): void {
+    this.prodOrderDetailsService.triggerRefresh();
   }
 }

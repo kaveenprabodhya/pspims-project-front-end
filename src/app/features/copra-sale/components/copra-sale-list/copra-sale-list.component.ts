@@ -25,6 +25,9 @@ export class CopraSaleListComponent {
 
   ngOnInit(): void {
     this.loadSales(this.pageNumber);
+    this.copraSaleService.refreshCopraSale$.subscribe(() => {
+      this.loadSales(this.pageNumber);
+    });
   }
 
   loadSales(page: number): void {
@@ -58,6 +61,7 @@ export class CopraSaleListComponent {
       this.copraSaleService.delete(sale.id!).subscribe(() => {
         this.copraSales = this.copraSales.filter(s => s.id !== sale.id);
       });
+      this.copraSaleService.triggerRefresh();
     }
   }
 

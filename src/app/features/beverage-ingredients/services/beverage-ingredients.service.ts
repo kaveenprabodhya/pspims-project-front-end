@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { BeverageIngredients } from '../models/beverage-ingredients.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -15,7 +15,14 @@ export class BeverageIngredientsService {
   private selectedIngredient = new BehaviorSubject<BeverageIngredients | null>(null);
   selectedIngredient$ = this.selectedIngredient.asObservable();
 
+  private _refreshIngredients$ = new Subject<void>();
+  refreshIngredients$ = this._refreshIngredients$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshIngredients$.next();
+  }
 
   // Manage selected item state
   setSelectedIngredient(ingredient: BeverageIngredients) {

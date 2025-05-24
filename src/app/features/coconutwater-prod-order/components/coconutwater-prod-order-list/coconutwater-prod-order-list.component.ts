@@ -25,6 +25,9 @@ export class CoconutwaterProdOrderListComponent {
 
   ngOnInit(): void {
     this.loadOrders(this.pageNumber);
+    this.coconutWaterProdOrderService.refreshCoconutwaterProdOrder$.subscribe(() => {
+      this.loadOrders(this.pageNumber);
+    });
   }
 
   loadOrders(page: number): void {

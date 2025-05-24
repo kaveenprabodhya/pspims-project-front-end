@@ -25,6 +25,9 @@ export class InventoryListComponent {
 
   ngOnInit(): void {
     this.loadInventory(this.pageNumber);
+    this.inventoryService.refreshInventory$.subscribe(() => {
+      this.loadInventory(this.pageNumber);
+    });
   }
 
   loadInventory(page: number): void {
@@ -54,6 +57,7 @@ export class InventoryListComponent {
       this.inventoryService.delete(item.id!).subscribe(() => {
         this.inventories = this.inventories.filter(i => i.id !== item.id);
       });
+      this.inventoryService.triggerRefresh();
     }
   }
 }

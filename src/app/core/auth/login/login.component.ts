@@ -38,8 +38,6 @@ export class LoginComponent {
     }
 
     const { username, password } = this.loginForm.value;
-
-    console.log(username, password);
     
 
     this.authService.login(username, password).subscribe({

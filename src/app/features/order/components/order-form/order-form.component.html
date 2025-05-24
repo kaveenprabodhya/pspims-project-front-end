@@ -217,8 +217,10 @@
           </select>
         </div>
         <div class="col-md-6 mb-3">
-          <label *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'" class="form-label">Delivery Vehicle</label>
-          <div *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'">
+          <label class="form-label">Delivery Vehicle</label>
+          <div>
+          <!-- <label *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'" class="form-label">Delivery Vehicle</label>
+          <div *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'"> -->
             <select formControlName="deliveryVehicle" class="form-select">
               <option selected disabled [ngValue]="null">
                 Select Avaiable Vehicle

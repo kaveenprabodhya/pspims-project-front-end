@@ -25,6 +25,9 @@ export class SupplierListComponent {
 
   ngOnInit(): void {
     this.loadSuppliers(this.pageNumber);
+    this.supplierService.refreshSupplier$.subscribe(() => {
+      this.loadSuppliers(this.pageNumber);
+    });
   }
 
   loadSuppliers(page: number): void {
@@ -57,6 +60,7 @@ export class SupplierListComponent {
       this.supplierService.delete(supplier.id!).subscribe(() => {
         this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
       });
+      this.supplierService.triggerRefresh();
     }
   }
 }

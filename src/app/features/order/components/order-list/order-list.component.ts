@@ -21,6 +21,9 @@ export class OrderListComponent {
 
   ngOnInit(): void {
     this.loadOrders(this.pageNumber);
+    this.orderService.refreshOrders$.subscribe(() => {
+      this.loadOrders(this.pageNumber);
+    });
   }
 
   loadOrders(page: number): void {
@@ -61,6 +64,7 @@ export class OrderListComponent {
       this.orderService.delete(order.id).subscribe(() => {
         this.orders = this.orders.filter(o => o.id !== order.id);
       });
+      this.orderService.triggerRefresh();
     }
   }
 }

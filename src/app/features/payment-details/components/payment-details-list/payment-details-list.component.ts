@@ -25,6 +25,9 @@ export class PaymentDetailsListComponent {
 
   ngOnInit(): void {
     this.loadPayments(this.pageNumber);
+    this.paymentDetailsService.refreshPaymentDetails$.subscribe(() => {
+      this.loadPayments(this.pageNumber);
+    });
   }
 
   loadPayments(page: number): void {

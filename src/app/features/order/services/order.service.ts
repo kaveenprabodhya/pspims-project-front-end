@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Order } from '../models/order.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PagedResponse } from '../../../shared/page-response';
@@ -14,7 +14,14 @@ export class OrderService {
   private selectedOrder = new BehaviorSubject<Order | null>(null);
   selectedOrder$ = this.selectedOrder.asObservable();
 
+  private _refreshOrders$ = new Subject<void>();
+  refreshOrders$ = this._refreshOrders$.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  triggerRefresh() {
+    this._refreshOrders$.next();
+  }
 
   setSelectedOrder(order: Order) {
     this.selectedOrder.next(order);
