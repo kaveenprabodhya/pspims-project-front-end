@@ -124,9 +124,6 @@ export class CopraSaleFormComponent {
           } else {
             this.saleService.getById(id).subscribe((sale) => {
               this.copraSale = sale;
-              this.saleService.setSelectedSale(sale);
-              this.loadCustomers();
-              this.loadDeliveryVehicles();
               this.patchCopraSaleForm();
             });
           }
@@ -187,7 +184,6 @@ export class CopraSaleFormComponent {
               });
             }
   
-            // Step 4: Assign filtered list to component
             this.deliveryVehicles = availableVehicles;
           },
           error: (err) => {
@@ -207,7 +203,6 @@ export class CopraSaleFormComponent {
       next: (response) => {
         this.existingCustomers = response.content;
 
-        // If in edit mode and customer already selected, patch form
         if (this.isEditMode && this.copraSale.customer?.id) {
           const matchedCustomer = this.existingCustomers.find(
             (c) => c.id === this.copraSale.customer.id
@@ -260,9 +255,8 @@ export class CopraSaleFormComponent {
         } else {
           this.saleService.getById(id).subscribe((sale) => {
             this.copraSale = sale;
-            this.saleService.setSelectedSale(sale);
             this.loadCustomers();
-            this.loadDeliveryVehicles();
+            // this.loadDeliveryVehicles();
             this.patchCopraSaleForm();
           });
         }
@@ -390,33 +384,25 @@ export class CopraSaleFormComponent {
   addSale() {
     const formValue = this.copraSaleForm.getRawValue();
   
-    // Step 1: Prepare shippingPlan object
     const shippingPlan = {
       ...formValue.shippingPlan,
       shippingDate: formatToDateOnly(formValue.shippingPlan.shippingDate),
       deliveryVehicle: formValue.shippingPlan.deliveryVehicle || null,
     };
   
-    // Step 2: Prepare paymentDetails object
     const paymentDetails = {
       ...formValue.paymentDetails,
       paymentDate: formatToDateOnly(formValue.paymentDetails.paymentDate),
       paymentAmount: Number(formValue.paymentDetails.paymentAmount),
     };
 
-    console.log(paymentDetails);
     
-  
-    // Step 3: Fetch full Customer object by ID
     this.customerService.getById(formValue.customer.id).subscribe({
       next: (customer) => {
-        // Step 4: Save shipping plan
         this.shippingPlanService.create(shippingPlan).subscribe({
           next: (savedShippingPlan) => {
-            // Step 5: Save payment details
             this.paymentDetailsService.create(paymentDetails).subscribe({
               next: (savedPaymentDetails) => {
-                // Step 6: Construct CopraSale
                 const saleToSave: CopraSale = {
                   ...this.copraSale,
                   saleQuantity: formValue.saleQuantity,
@@ -424,15 +410,13 @@ export class CopraSaleFormComponent {
                   saleDate: formatToDateOnly(formValue.saleDate),
                   totalSaleAmount: Number(formValue.totalSaleAmount),
   
-                  customer: customer, // full customer object from DB
+                  customer: customer, 
                   shippingPlan: savedShippingPlan,
                   paymentDetails: savedPaymentDetails,
                 };
   
-                // Step 7: Save CopraSale
                 this.saleService.create(saleToSave).subscribe({
                   next: (res) => {
-                    console.log('Sale added successfully:', res);
                     this.resetForm();
                   },
                   error: (err) => {
@@ -458,18 +442,67 @@ export class CopraSaleFormComponent {
   
 
   updateSale() {
-    const saleToUpdate = this.prepareFormToSave();
-    // console.log(saleToUpdate);
+    const formValue = this.copraSaleForm.getRawValue();
+      
+    const updatedShippingPlan = {
+      ...this.copraSale.shippingPlan,
+      ...formValue.shippingPlan,
+      shippingDate: formatToDateOnly(formValue.shippingPlan.shippingDate),
+      deliveryVehicle: formValue.shippingPlan.deliveryVehicle || null,
+    };
+  
+    const updatedPaymentDetails = {
+      ...this.copraSale.paymentDetails,
+      ...formValue.paymentDetails,
+      paymentDate: formatToDateOnly(formValue.paymentDetails.paymentDate),
+      paymentAmount: Number(formValue.paymentDetails.paymentAmount),
+    };
     
-    if (!saleToUpdate.id) {
-      console.error('Sale ID is missing. Cannot update.');
-      return;
-    }
-    this.saleService.update(saleToUpdate.id, saleToUpdate).subscribe((res) => {
-      console.log('Sale updated successfully:', res);
-      this.resetForm();
+  
+    this.shippingPlanService.update(updatedShippingPlan.id, updatedShippingPlan).subscribe({
+      next: (savedShippingPlan) => {
+        this.paymentDetailsService.update(updatedPaymentDetails.id, updatedPaymentDetails).subscribe({
+          next: (savedPaymentDetails) => {
+            this.customerService.getById(formValue.customer.id).subscribe({
+              next: (customer) => {
+                const saleToUpdate: CopraSale = {
+                  ...this.copraSale,
+                  saleQuantity: formValue.saleQuantity,
+                  pricePerQuantity: formValue.pricePerQuantity,
+                  saleDate: formatToDateOnly(formValue.saleDate),
+                  totalSaleAmount: Number(formValue.totalSaleAmount),
+                  customer: customer,
+                  shippingPlan: savedShippingPlan,
+                  paymentDetails: savedPaymentDetails,
+                };
+  
+                if(saleToUpdate.id) {
+                  this.saleService.update(saleToUpdate.id, saleToUpdate).subscribe({
+                    next: (res) => {
+                      this.resetForm();
+                    },
+                    error: (err) => {
+                      console.error('Failed to update CopraSale', err);
+                    }
+                  });
+                }
+              },
+              error: (err) => {
+                console.error('Failed to fetch Customer', err);
+              }
+            });
+          },
+          error: (err) => {
+            console.error('Failed to update PaymentDetails', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to update ShippingPlan', err);
+      }
     });
   }
+  
 
   prepareFormToSave(): CopraSale {
     const formValue = this.copraSaleForm.getRawValue();

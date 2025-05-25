@@ -44,8 +44,8 @@ export class CoconutPurchaseFormComponent {
     private router: Router
   ) {
     this.purchaseForm = this.fb.group({
-      purchaseQuantity: [0, [Validators.required, Validators.min(1)]],
-      pricePerUnit: [0, [Validators.required, Validators.min(0)]],
+      purchaseQuantity: [[{value: 0}], [Validators.required, Validators.min(1)]],
+      pricePerUnit: [[{value: 0}], [Validators.required, Validators.min(0)]],
       purchaseDate: ['', Validators.required],
       coconutQualityGrade: ['', Validators.required],
       supplier: [null, Validators.required],
@@ -194,7 +194,7 @@ export class CoconutPurchaseFormComponent {
     this.purchase = { ...this.purchase, ...this.purchaseForm.value };
 
     if (this.isEditMode) {
-      this.updatePurchase(formValue);
+      this.updatePurchase(this.purchase);
     } else {
       this.addPurchase(formValue);
     }

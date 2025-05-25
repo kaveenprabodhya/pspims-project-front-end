@@ -12,5 +12,4 @@ export interface ProdOrderDetails {
   totalAmount: number;
   productionQuantityMeasure: ProductionQuantityMeasureEnum;
   prodStatus: ProdStatusEnum;
-  batchNumber: string;
 }

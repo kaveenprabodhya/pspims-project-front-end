@@ -35,7 +35,6 @@ export class OrderListComponent {
           paymentAmount: o.paymentDetails?.paymentAmount,
           shippingAddress: o.shippingPlan?.shippingAddress,
         }));
-        // console.log(this.orders);
         
         this.pageNumber = response.page.number;
         this.pageSize = response.page.size;

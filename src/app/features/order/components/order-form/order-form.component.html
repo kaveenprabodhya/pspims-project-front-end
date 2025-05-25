@@ -79,14 +79,14 @@
         <label class="form-label">Beverage Type</label>
         <select class="form-select" formControlName="beverageType">
           <option disabled selected value="">Select Beverage Type</option>
-          <option *ngFor="let beverage of beverageTypes" [value]="beverage">
+          <option *ngFor="let beverage of beverageTypes" [ngValue]="beverage">
             {{ beverage.beverageName }}
           </option>
         </select>
       </div>
     </div>
 
-    <div *ngIf="!isEditMode" class="my-3 border p-2">
+    <!-- <div *ngIf="!isEditMode" class="my-3 border p-2">
       <button
         type="button"
         class="btn btn-outline-primary me-2"
@@ -103,17 +103,13 @@
       >
         Search Customer
       </button>
-    </div>
+    </div> -->
 
     <div *ngIf="showCustomerSearchForm" class="mt-3 border p-3">
       <label class="mb-2">Select Existing Customer</label>
-      <select
-        #customerSelect
-        class="form-select"
-        (change)="onSelectCustomer(customerSelect.value)"
-      >
-        <option disabled selected [value]="">Select Customer</option>
-        <option *ngFor="let c of existingCustomers" [value]="c.id">
+      <select class="form-select" [formControl]="customerSelectControl">
+        <option disabled selected [value]="null">Select Customer</option>
+        <option *ngFor="let c of existingCustomers" [ngValue]="c">
           {{ c.firstName }} {{ c.lastName }}
         </option>
       </select>
@@ -217,6 +213,15 @@
           </select>
         </div>
         <div class="col-md-6 mb-3">
+          <label class="form-label">Tracking Number</label>
+          <input
+            formControlName="trackingNumber"
+            class="form-control"
+            placeholder="Tracking Number"
+            readonly
+          />
+        </div>
+        <div class="col-md-6 mb-3">
           <label class="form-label">Delivery Vehicle</label>
           <div>
           <!-- <label *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'" class="form-label">Delivery Vehicle</label>
@@ -229,7 +234,7 @@
                 *ngFor="let vehicle of deliveryVehicles"
                 [ngValue]="vehicle"
               >
-                {{ vehicle.vehicleRegNo }} ({{ vehicle.id }})
+                {{ vehicle.vehicleRegNo }} ({{ vehicle.vehicleType }})
               </option>
             </select>
           </div>
@@ -262,15 +267,6 @@
           />
         </div>
         <div class="col-md-6 mb-3">
-          <label class="form-label">Payment Amount</label>
-          <input
-            type="number"
-            class="form-control"
-            min="0"
-            formControlName="paymentAmount"
-          />
-        </div>
-        <div class="col-md-6 mb-3">
           <label class="form-label">Payment Method</label>
           <select formControlName="paymentMethod" class="form-select">
             <option selected disabled value="">Select Payment Method</option>
@@ -282,6 +278,16 @@
             </option>
           </select>
         </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            min="0"
+            formControlName="paymentAmount"
+          />
+        </div>
+        
       </div>
     </div>
 
