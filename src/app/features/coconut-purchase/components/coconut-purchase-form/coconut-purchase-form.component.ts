@@ -44,8 +44,8 @@ export class CoconutPurchaseFormComponent {
     private router: Router
   ) {
     this.purchaseForm = this.fb.group({
-      purchaseQuantity: [[{value: 0}], [Validators.required, Validators.min(1)]],
-      pricePerUnit: [[{value: 0}], [Validators.required, Validators.min(0)]],
+      purchaseQuantity: [null, [Validators.required, Validators.min(1)]],
+      pricePerUnit: [null, [Validators.required, Validators.min(0)]],
       purchaseDate: ['', Validators.required],
       coconutQualityGrade: ['', Validators.required],
       supplier: [null, Validators.required],
@@ -168,12 +168,12 @@ export class CoconutPurchaseFormComponent {
 
   initEmptyPurchase(): CoconutPurchase {
     return {
-      purchaseQuantity: 0,
-      pricePerUnit: 0,
+      purchaseQuantity: null as any,
+      pricePerUnit: null as any,
       purchaseDate: '',
       coconutQualityGrade: '' as CoconutQualityGrade,
-      supplier: {} as Supplier,
-      inventory: {} as Inventory,
+      supplier: null as any,
+      inventory: null as any,
     };
   }
 
@@ -185,7 +185,10 @@ export class CoconutPurchaseFormComponent {
   }
 
   onSubmit() {
-    if (this.purchaseForm.invalid) return;
+    if (this.purchaseForm.invalid) {
+      this.purchaseForm.markAllAsTouched();
+      return;
+    }  
 
     const formValue = this.purchaseForm.value;
 
@@ -236,4 +239,54 @@ export class CoconutPurchaseFormComponent {
     this.purchaseService.triggerRefresh();
     this.router.navigate(['admin/dashboard/coconut-purchase/list']);
   }
+
+  getFormErrors(): string[] {
+    const errors: string[] = [];
+    const controls = this.purchaseForm.controls;
+  
+    if (controls['purchaseQuantity'].touched && controls['purchaseQuantity'].errors) {
+      if (controls['purchaseQuantity'].errors['required']) {
+        errors.push('Purchase quantity is required.');
+      }
+      if (controls['purchaseQuantity'].errors['min']) {
+        errors.push('Purchase quantity must be at least 1.');
+      }
+    }
+  
+    if (controls['pricePerUnit'].touched && controls['pricePerUnit'].errors) {
+      if (controls['pricePerUnit'].errors['required']) {
+        errors.push('Price per unit is required.');
+      }
+      if (controls['pricePerUnit'].errors['min']) {
+        errors.push('Price per unit must be at least 0.');
+      }
+    }
+  
+    if (controls['purchaseDate'].touched && controls['purchaseDate'].errors) {
+      if (controls['purchaseDate'].errors['required']) {
+        errors.push('Purchase date is required.');
+      }
+    }
+  
+    if (controls['coconutQualityGrade'].touched && controls['coconutQualityGrade'].errors) {
+      if (controls['coconutQualityGrade'].errors['required']) {
+        errors.push('Coconut quality grade is required.');
+      }
+    }
+  
+    if (controls['supplier'].touched && controls['supplier'].errors) {
+      if (controls['supplier'].errors['required']) {
+        errors.push('Supplier selection is required.');
+      }
+    }
+  
+    if (controls['inventory'].touched && controls['inventory'].errors) {
+      if (controls['inventory'].errors['required']) {
+        errors.push('Inventory selection is required.');
+      }
+    }
+  
+    return errors;
+  }
+  
 }

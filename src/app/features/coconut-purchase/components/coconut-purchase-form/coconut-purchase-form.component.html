@@ -3,6 +3,14 @@
 </h5>
 
 <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" class="mt-3">
+  <div
+    *ngIf="getFormErrors().length > 0"
+    class="alert alert-danger p-2 mb-3 rounded"
+  >
+    <ul class="mb-0">
+      <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+    </ul>
+  </div>
   <div class="mb-3">
     <label for="purchaseQuantity" class="form-label">Purchase Quantity</label>
     <input
@@ -89,7 +97,6 @@
   <button
     type="submit"
     class="btn btn-primary"
-    [disabled]="purchaseForm.invalid"
   >
     {{ isEditMode ? "Update Purchase" : "Add Purchase" }}
   </button>

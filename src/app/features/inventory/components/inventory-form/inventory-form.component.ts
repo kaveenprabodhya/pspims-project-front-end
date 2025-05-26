@@ -36,10 +36,10 @@ export class InventoryFormComponent {
   ) {
     this.inventoryForm = this.fb.group({
       inventoryItemType: ['', Validators.required],
-      inventoryQuantity: [0, [Validators.required, Validators.min(0)]],
+      inventoryQuantity: [null, [Validators.required, Validators.min(0)]],
       inventoryQuantityType: ['', Validators.required],
-      minimumStockLevel: [0, [Validators.required, Validators.min(0)]],
-      maximumStockLevel: [0, [Validators.required, Validators.min(0)]],
+      minimumStockLevel: [null, [Validators.required, Validators.min(0)]],
+      maximumStockLevel: [null, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -103,15 +103,18 @@ export class InventoryFormComponent {
   initEmptyInventory(): Inventory {
     return {
       inventoryItemType: '' as InventoryItemTypeEnum,
-      inventoryQuantity: 0,
+      inventoryQuantity: null as any,
       inventoryQuantityType: '' as InventoryQuantityTypeEnum,
-      minimumStockLevel: 0,
-      maximumStockLevel: 0,
+      minimumStockLevel: null as any,
+      maximumStockLevel: null as any,
     };
   }
 
   onSubmit() {
-    if (this.inventoryForm.invalid) return;
+    if (this.inventoryForm.invalid) {
+      this.inventoryForm.markAllAsTouched();
+      return;
+    }
 
     const formValue = this.inventoryForm.value;
 
@@ -152,4 +155,55 @@ export class InventoryFormComponent {
     this.inventoryService.triggerRefresh();
     this.router.navigate(['admin/dashboard/inventory/list']);
   }
+
+  getFormErrors(form: FormGroup = this.inventoryForm, parentKey: string = ''): string[] {
+    const errors: string[] = [];
+  
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+  
+      if (control instanceof FormGroup) {
+        errors.push(...this.getFormErrors(control, controlPath));
+      } else if (control && control.invalid && (control.dirty || control.touched)) {
+        const controlErrors = control.errors;
+        if (controlErrors) {
+          Object.keys(controlErrors).forEach((errorKey) => {
+            const fieldName = this.formatFieldName(controlPath);
+            let message = `${fieldName}: ${errorKey}`;
+  
+            // Custom error messages
+            if (errorKey === 'required') {
+              message = `${fieldName} is required.`;
+            } else if (errorKey === 'email') {
+              message = `${fieldName} must be a valid email address.`;
+            } else if (errorKey === 'minlength') {
+              message = `${fieldName} is too short.`;
+            } else if (errorKey === 'maxlength') {
+              message = `${fieldName} is too long.`;
+            } else if (errorKey === 'pattern') {
+              message = `${fieldName} format is invalid.`;
+            }
+  
+            errors.push(message);
+          });
+        }
+      }
+    });
+  
+    return errors;
+  }
+
+  private formatFieldName(fieldPath: string): string {
+    return fieldPath
+      .split('.')
+      .map(part =>
+        part
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, str => str.toUpperCase())
+          .trim()
+      )
+      .join(' > ');
+  }
+  
 }

@@ -1,6 +1,14 @@
 <div class="container mt-4">
   <h5>{{ isEditMode ? 'Edit Inventory' : 'Add Inventory' }}</h5>
     <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+      <div
+      *ngIf="getFormErrors().length > 0"
+      class="alert alert-danger p-2 mb-3 rounded"
+    >
+      <ul class="mb-0">
+        <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+      </ul>
+    </div>
       <div class="mb-3">
         <label class="form-label">Inventory Item Type</label>
         <select class="form-select" formControlName="inventoryItemType" required>
@@ -32,7 +40,7 @@
         <input type="number" class="form-control" formControlName="maximumStockLevel" required min="0" />
       </div>
   
-      <button class="btn btn-success" type="submit" [disabled]="inventoryForm.invalid">
+      <button class="btn btn-success" type="submit">
         {{ isEditMode ? 'Update Inventory' : 'Add Inventory' }}
       </button>
     </form>

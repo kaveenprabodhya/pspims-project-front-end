@@ -294,46 +294,47 @@ export class CopraSaleFormComponent {
       id: '',
       saleDate: '',
       saleQuantity: 0,
-      paymentDetails: {} as PaymentDetails,
-      pricePerQuantity: 0,
-      totalSaleAmount: 0,
-      shippingPlan: {} as ShippingPlan,
-      customer: {} as Customer,
+      paymentDetails: null as any,
+      pricePerQuantity: null as any,
+      totalSaleAmount: null as any,
+      shippingPlan: null as any,
+      customer: null as any,
     };
   }
 
   initCustomerForm(): FormGroup {
     return this.fb.group({
       id: [''],
-      firstName: [''],
-      lastName: [''],
-      email: [''],
-      address: [''],
-      customerType: [''],
-      creditLimit: [null],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', Validators.required],
+      customerType: ['', Validators.required],
+      creditLimit: [null, [Validators.min(0)]],
     });
   }
 
   initShippingPlanForm(): FormGroup {
     return this.fb.group({
-      shippingAddress: [''],
-      shippingDate: [''],
-      shippingType: [''],
-      shippingStatus: [''],
-      deliveryType: [''],
-      deliveryVehicle: [null],
-      trackingNumber: [uuidv4()],
+      shippingAddress: ['', Validators.required],
+      shippingDate: ['', Validators.required],
+      shippingType: ['', Validators.required],
+      shippingStatus: ['', Validators.required],
+      deliveryType: ['', Validators.required],
+      deliveryVehicle: [null, Validators.required],
+      trackingNumber: [uuidv4()], 
     });
   }
-
+  
   initPaymentDetailsForm(): FormGroup {
     return this.fb.group({
-      paymentStatus: [''],
-      paymentDate: [''],
-      paymentAmount: [{ value: '', disabled: true }],
-      paymentMethod: [''],
+      paymentStatus: ['', Validators.required],
+      paymentDate: ['', Validators.required],
+      paymentAmount: [{ value: '', disabled: true }, [Validators.required, Validators.min(0.01)]],
+      paymentMethod: ['', Validators.required],
     });
   }
+  
 
   updatePaymentAmount(): void {
     const quantity = this.copraSaleForm.get('saleQuantity')?.value;
@@ -372,7 +373,10 @@ export class CopraSaleFormComponent {
   customerTypeOptions = Object.values(CustomerType);
 
   onSubmit() {
-    if (this.copraSaleForm.invalid) return;
+    if (this.copraSaleForm.invalid) {
+      this.copraSaleForm.markAllAsTouched();
+      return;
+    }
 
     if (this.isEditMode) {
       this.updateSale();
@@ -543,6 +547,57 @@ export class CopraSaleFormComponent {
     this.saleService.triggerRefresh();
     this.router.navigate(['admin/dashboard/copra-sale/list']);
   }
+
+  getFormErrors(form: FormGroup = this.copraSaleForm, parentKey: string = ''): string[] {
+    const errors: string[] = [];
+  
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+  
+      if (control instanceof FormGroup) {
+        errors.push(...this.getFormErrors(control, controlPath));
+      } else if (control && control.invalid && (control.dirty || control.touched)) {
+        const controlErrors = control.errors;
+        if (controlErrors) {
+          Object.keys(controlErrors).forEach((errorKey) => {
+            const fieldName = this.formatFieldName(controlPath);
+            let message = `${fieldName}: ${errorKey}`;
+  
+            // Custom error messages
+            if (errorKey === 'required') {
+              message = `${fieldName} is required.`;
+            } else if (errorKey === 'email') {
+              message = `${fieldName} must be a valid email address.`;
+            } else if (errorKey === 'minlength') {
+              message = `${fieldName} is too short.`;
+            } else if (errorKey === 'maxlength') {
+              message = `${fieldName} is too long.`;
+            } else if (errorKey === 'pattern') {
+              message = `${fieldName} format is invalid.`;
+            }
+  
+            errors.push(message);
+          });
+        }
+      }
+    });
+  
+    return errors;
+  }
+  
+  private formatFieldName(fieldPath: string): string {
+    return fieldPath
+      .split('.')
+      .map(part =>
+        part
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, str => str.toUpperCase())
+          .trim()
+      )
+      .join(' > ');
+  }
+  
 
   get customerForm(): FormGroup {
     return this.copraSaleForm.get('customer') as FormGroup;

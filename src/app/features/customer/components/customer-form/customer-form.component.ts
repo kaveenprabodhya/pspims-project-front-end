@@ -36,7 +36,7 @@ export class CustomerFormComponent {
       email: ['', [Validators.required, Validators.email]],
       address: ['', Validators.required],
       customerType: ['', Validators.required],
-      creditLimit: [0, [Validators.required, Validators.min(0)]],
+      creditLimit: [null, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -85,7 +85,7 @@ export class CustomerFormComponent {
     return {
       id: '',
       address: '',
-      creditLimit: 0,
+      creditLimit: null as any,
       email: '',
       customerType: '' as CustomerType,
       firstName: '',
@@ -116,7 +116,10 @@ export class CustomerFormComponent {
   }
 
   onSubmit() {
-    if (this.customerForm.invalid) return;
+    if (this.customerForm.invalid) {
+      this.customerForm.markAllAsTouched();
+      return;
+    }
 
     this.customer = { ...this.customer, ...this.customerForm.value };
 
@@ -162,4 +165,55 @@ export class CustomerFormComponent {
     this.customerService.triggerRefresh();
     this.router.navigate(['admin/dashboard/customer/list']);
   }
+
+  getFormErrors(form: FormGroup = this.customerForm, parentKey: string = ''): string[] {
+    const errors: string[] = [];
+  
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+  
+      if (control instanceof FormGroup) {
+        errors.push(...this.getFormErrors(control, controlPath));
+      } else if (control && control.invalid && (control.dirty || control.touched)) {
+        const controlErrors = control.errors;
+        if (controlErrors) {
+          Object.keys(controlErrors).forEach((errorKey) => {
+            const fieldName = this.formatFieldName(controlPath);
+            let message = `${fieldName}: ${errorKey}`;
+  
+            // Custom error messages
+            if (errorKey === 'required') {
+              message = `${fieldName} is required.`;
+            } else if (errorKey === 'email') {
+              message = `${fieldName} must be a valid email address.`;
+            } else if (errorKey === 'minlength') {
+              message = `${fieldName} is too short.`;
+            } else if (errorKey === 'maxlength') {
+              message = `${fieldName} is too long.`;
+            } else if (errorKey === 'pattern') {
+              message = `${fieldName} format is invalid.`;
+            }
+  
+            errors.push(message);
+          });
+        }
+      }
+    });
+  
+    return errors;
+  }
+
+  private formatFieldName(fieldPath: string): string {
+    return fieldPath
+      .split('.')
+      .map(part =>
+        part
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, str => str.toUpperCase())
+          .trim()
+      )
+      .join(' > ');
+  }
+  
 }

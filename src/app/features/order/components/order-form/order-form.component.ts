@@ -25,8 +25,6 @@ import { CustomerType } from '../../../../shared/enums/customer-type';
 import { Order } from '../../models/order.model';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
-import { PaymentDetails } from '../../../payment-details/models/payment-details.model';
-import { ShippingPlan } from '../../../shipping-plan/models/shipping-plan.model';
 import { DeliveryVehicleService } from '../../../delivery-vehicle/services/delivery-vehicle.service';
 import { CustomerService } from '../../../customer/services/customer.service';
 import { ShippingPlanService } from '../../../shipping-plan/services/shipping-plan.service';
@@ -196,9 +194,9 @@ export class OrderFormComponent {
       id: '',
       orderDate: '',
       orderStatus: '' as OrderStatusEnum,
-      paymentDetails: {} as PaymentDetails,
-      customer: {} as Customer,
-      shippingPlan: {} as ShippingPlan,
+      paymentDetails: null as any,
+      customer: null as any,
+      shippingPlan: null as any,
     };
   }
 
@@ -287,36 +285,34 @@ export class OrderFormComponent {
     this.beverageTypeService.getAll().subscribe({
       next: (response) => {
         let beverageTypes = response.content;
-  
-        if (
-          this.isEditMode &&
-          this.order.beverageProdOrder?.beverageType?.id
-        ) {
-          const selectedBeverageTypeId = this.order.beverageProdOrder.beverageType.id;
-  
+
+        if (this.isEditMode && this.order.beverageProdOrder?.beverageType?.id) {
+          const selectedBeverageTypeId =
+            this.order.beverageProdOrder.beverageType.id;
+
           const selectedBeverageType = beverageTypes.find(
             (bt) => bt.id === selectedBeverageTypeId
           );
-  
+
           if (
             selectedBeverageType &&
             !beverageTypes.find((bt) => bt.id === selectedBeverageType.id)
           ) {
             beverageTypes.push(selectedBeverageType);
           }
-  
+
           this.beverageProdOrderForm.patchValue({
             beverageType: selectedBeverageType,
           });
         }
-  
+
         this.beverageTypes = beverageTypes;
       },
       error: (err) => {
         console.error('Failed to load beverage types', err);
       },
     });
-  }  
+  }
 
   resetFormOnRoute() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -451,8 +447,8 @@ export class OrderFormComponent {
     return this.fb.group({
       prodOrderDetails: this.fb.group({
         prodDate: [null, Validators.required],
-        prodQuantity: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
-        pricePerUnit: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
+        prodQuantity: [null, [Validators.required, Validators.min(0.01)]],
+        pricePerUnit: [null, [Validators.required, Validators.min(0.01)]],
         totalAmount: [{ value: 0, disabled: true }],
         productionQuantityMeasure: [[''], Validators.required],
         prodStatus: [[''], Validators.required],
@@ -464,8 +460,8 @@ export class OrderFormComponent {
     return this.fb.group({
       prodOrderDetails: this.fb.group({
         prodDate: [null, Validators.required],
-        prodQuantity: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
-        pricePerUnit: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
+        prodQuantity: [null, [Validators.required, Validators.min(0.01)]],
+        pricePerUnit: [null, [Validators.required, Validators.min(0.01)]],
         totalAmount: [{ value: 0, disabled: true }],
         productionQuantityMeasure: [[''], Validators.required],
         prodStatus: [[''], Validators.required],
@@ -478,8 +474,8 @@ export class OrderFormComponent {
     return this.fb.group({
       prodOrderDetails: this.fb.group({
         prodDate: [null, Validators.required],
-        prodQuantity: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
-        pricePerUnit: [[{value: 0}], [Validators.required, Validators.min(0.01)]],
+        prodQuantity: [null, [Validators.required, Validators.min(0.01)]],
+        pricePerUnit: [null, [Validators.required, Validators.min(0.01)]],
         totalAmount: [{ value: 0, disabled: true }],
         productionQuantityMeasure: [[''], Validators.required],
         prodStatus: [[''], Validators.required],
@@ -491,33 +487,36 @@ export class OrderFormComponent {
   initCustomerForm(): FormGroup {
     return this.fb.group({
       id: [''],
-      firstName: [''],
-      lastName: [''],
-      email: [''],
-      address: [''],
-      customerType: [''],
-      creditLimit: [null],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', Validators.required],
+      customerType: ['', Validators.required],
+      creditLimit: [null, [Validators.min(0)]],
     });
   }
 
   initShippingPlanForm(): FormGroup {
     return this.fb.group({
-      shippingAddress: [''],
-      shippingDate: [''],
-      shippingType: [''],
-      shippingStatus: [''],
-      deliveryType: [''],
-      deliveryVehicle: [null],
+      shippingAddress: ['', Validators.required],
+      shippingDate: ['', Validators.required],
+      shippingType: ['', Validators.required],
+      shippingStatus: ['', Validators.required],
+      deliveryType: ['', Validators.required],
+      deliveryVehicle: [null, Validators.required],
       trackingNumber: [uuidv4()],
     });
   }
 
   initPaymentDetailsForm(): FormGroup {
     return this.fb.group({
-      paymentStatus: [''],
-      paymentDate: [''],
-      paymentAmount: [{ value: '', disabled: true }],
-      paymentMethod: [''],
+      paymentStatus: ['', Validators.required],
+      paymentDate: ['', Validators.required],
+      paymentAmount: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.min(0.01)],
+      ],
+      paymentMethod: ['', Validators.required],
     });
   }
 
@@ -557,6 +556,29 @@ export class OrderFormComponent {
   customerTypeOptions = Object.values(CustomerType);
 
   onSubmit() {
+    const orderType = this.orderForm.get('orderType')?.value;
+
+    if (!orderType) {
+      this.orderForm.get('orderType')?.markAsTouched();
+      return;
+    }
+
+    this.orderForm.markAllAsTouched();
+
+    const subformName = this.getProductOrderControlName(orderType);
+    const subform = this.orderForm.get(subformName) as FormGroup;
+
+    if (subform) {
+      subform.markAllAsTouched();
+    } else {
+      console.warn(`Subform "${subformName}" was not added to orderForm.`);
+    }
+
+    if (this.orderForm.invalid) {
+      console.log('Form errors:', this.getFormErrors()); // <-- For debug
+      return;
+    }
+
     if (this.isEditMode) {
       this.updateOrder();
     } else {
@@ -567,88 +589,101 @@ export class OrderFormComponent {
   addOrder() {
     const formValue = this.orderForm.getRawValue();
     const orderType = formValue.orderType;
-  
+
     delete formValue.customerMode;
     delete formValue.orderType;
-  
+
     const shippingPlan = {
       ...formValue.shippingPlan,
       shippingDate: formatToDateOnly(formValue.shippingPlan.shippingDate),
       deliveryVehicle: formValue.shippingPlan.deliveryVehicle || null,
     };
-  
+
     const paymentDetails = {
       ...formValue.paymentDetails,
       paymentDate: formatToDateOnly(formValue.paymentDetails.paymentDate),
       paymentAmount: Number(formValue.paymentDetails.paymentAmount),
     };
-  
+
     let prodOrderDetails: any;
     let productOrder: any;
+    let createProdOrderDetails: (pod: any) => Observable<any> = (pod) =>
+      this.prodOrderDetailsService.create(pod);
     let createProductOrder: ((po: any) => Observable<any>) | undefined;
     let assignProductOrder: (order: Order, po: any) => void;
-  
+
     switch (orderType) {
       case 'CoconutWaterProdOrder':
         prodOrderDetails = formValue.coconutWaterProdOrder.prodOrderDetails;
         productOrder = { ...formValue.coconutWaterProdOrder };
         createProductOrder = (po) => this.coconutWaterOrderService.create(po);
-        assignProductOrder = (order, po) => order.coconutWaterProdOrder = po;
+        assignProductOrder = (order, po) => (order.coconutWaterProdOrder = po);
         break;
-  
+
       case 'VinegarProdOrder':
         prodOrderDetails = formValue.vinegarProdOrder.prodOrderDetails;
         productOrder = { ...formValue.vinegarProdOrder };
         createProductOrder = (po) => this.vinegarOrderService.create(po);
-        assignProductOrder = (order, po) => order.vinegarProdOrder = po;
+        assignProductOrder = (order, po) => (order.vinegarProdOrder = po);
         break;
-  
+
       case 'BeverageProdOrder':
         prodOrderDetails = formValue.beverageProdOrder.prodOrderDetails;
         productOrder = { ...formValue.beverageProdOrder };
         createProductOrder = (po) => this.beverageOrderService.create(po);
-        assignProductOrder = (order, po) => order.beverageProdOrder = po;
+        assignProductOrder = (order, po) => (order.beverageProdOrder = po);
         break;
-  
+
       default:
         console.error('Invalid order type:', orderType);
-        return; 
+        return;
     }
-  
+
     if (!createProductOrder) {
-      console.error('Product order service function not set for orderType:', orderType);
+      console.error(
+        'Product order service function not set for orderType:',
+        orderType
+      );
       return;
     }
-  
+
     this.customerService.getById(formValue.customer.id).subscribe({
       next: (customer) => {
         this.shippingPlanService.create(shippingPlan).subscribe({
           next: (savedShippingPlan) => {
             this.paymentDetailsService.create(paymentDetails).subscribe({
               next: (savedPaymentDetails) => {
-                createProductOrder(productOrder).subscribe({
-                  next: (savedProductOrder) => {
-                    const orderToSave: Order = {
-                      orderDate: formatToDateOnly(formValue.orderDate),
-                      orderStatus: formValue.orderStatus,
-                      customer,
-                      shippingPlan: savedShippingPlan,
-                      paymentDetails: savedPaymentDetails,
-                      coconutWaterProdOrder: undefined,
-                      vinegarProdOrder: undefined,
-                      beverageProdOrder: undefined,
-                    };
-  
-                    assignProductOrder(orderToSave, savedProductOrder);
-  
-                    this.orderService.create(orderToSave).subscribe({
-                      next: () => this.resetForm(),
+                createProdOrderDetails(prodOrderDetails).subscribe({
+                  next: (savedProdOrderDetails) => {
+                    productOrder.prodOrderDetails = savedProdOrderDetails;
+
+                    createProductOrder(productOrder).subscribe({
+                      next: (savedProductOrder) => {
+                        const orderToSave: Order = {
+                          orderDate: formatToDateOnly(formValue.orderDate),
+                          orderStatus: formValue.orderStatus,
+                          customer,
+                          shippingPlan: savedShippingPlan,
+                          paymentDetails: savedPaymentDetails,
+                          coconutWaterProdOrder: undefined,
+                          vinegarProdOrder: undefined,
+                          beverageProdOrder: undefined,
+                        };
+
+                        assignProductOrder(orderToSave, savedProductOrder);
+
+                        this.orderService.create(orderToSave).subscribe({
+                          next: () => this.resetForm(),
+                          error: (err) =>
+                            console.error('Failed to create Order', err),
+                        });
+                      },
                       error: (err) =>
-                        console.error('Failed to create Order', err),
+                        console.error('Failed to create Product Order', err),
                     });
                   },
                   error: (err) =>
-                    console.error('Failed to create Product Order', err),
+                    console.error('Failed to create ProdOrderDetails', err),
                 });
               },
               error: (err) =>
@@ -661,106 +696,152 @@ export class OrderFormComponent {
       error: (err) => console.error('Failed to fetch Customer by ID', err),
     });
   }
-  
+
   updateOrder() {
     const formValue = this.orderForm.getRawValue();
     const orderType = formValue.orderType;
-  
+
     delete formValue.customerMode;
     delete formValue.orderType;
-  
+
     const updatedShippingPlan = {
       ...this.order.shippingPlan,
       ...formValue.shippingPlan,
       shippingDate: formatToDateOnly(formValue.shippingPlan.shippingDate),
       deliveryVehicle: formValue.shippingPlan.deliveryVehicle || null,
     };
-  
+
     const updatedPaymentDetails = {
       ...this.order.paymentDetails,
       ...formValue.paymentDetails,
       paymentDate: formatToDateOnly(formValue.paymentDetails.paymentDate),
       paymentAmount: Number(formValue.paymentDetails.paymentAmount),
     };
-  
+
     let prodOrderDetails: any;
     let productOrder: any;
+    let updateProdOrderDetails: (pod: any) => Observable<any> = (pod) =>
+      this.prodOrderDetailsService.update(pod.id, pod);
     let updateProductOrder: ((po: any) => Observable<any>) | undefined;
     let assignProductOrder: (order: Order, po: any) => void;
-  
+
     switch (orderType) {
       case 'CoconutWaterProdOrder':
-        prodOrderDetails = {...this.order.coconutWaterProdOrder?.prodOrderDetails, ...formValue.coconutWaterProdOrder.prodOrderDetails};
-        productOrder = { ...this.order.coconutWaterProdOrder, ...formValue.coconutWaterProdOrder };
-        updateProductOrder = (po) => this.coconutWaterOrderService.update(po.id, po);
-        assignProductOrder = (order, po) => order.coconutWaterProdOrder = po;
+        prodOrderDetails = {
+          ...this.order.coconutWaterProdOrder?.prodOrderDetails,
+          ...formValue.coconutWaterProdOrder.prodOrderDetails,
+        };
+        productOrder = {
+          ...this.order.coconutWaterProdOrder,
+          ...formValue.coconutWaterProdOrder,
+        };
+        updateProductOrder = (po) =>
+          this.coconutWaterOrderService.update(po.id, po);
+        assignProductOrder = (order, po) => (order.coconutWaterProdOrder = po);
         break;
-  
+
       case 'VinegarProdOrder':
-        prodOrderDetails = {...this.order.vinegarProdOrder?.prodOrderDetails, ...formValue.vinegarProdOrder.prodOrderDetails};
-        productOrder = { ...this.order.vinegarProdOrder, ...formValue.vinegarProdOrder };
+        prodOrderDetails = {
+          ...this.order.vinegarProdOrder?.prodOrderDetails,
+          ...formValue.vinegarProdOrder.prodOrderDetails,
+        };
+        productOrder = {
+          ...this.order.vinegarProdOrder,
+          ...formValue.vinegarProdOrder,
+        };
         updateProductOrder = (po) => this.vinegarOrderService.update(po.id, po);
-        assignProductOrder = (order, po) => order.vinegarProdOrder = po;
+        assignProductOrder = (order, po) => (order.vinegarProdOrder = po);
         break;
-  
+
       case 'BeverageProdOrder':
-        prodOrderDetails = {...this.order.beverageProdOrder?.prodOrderDetails, ...formValue.beverageProdOrder.prodOrderDetails};
-        productOrder = { ...this.order.beverageProdOrder, ...formValue.beverageProdOrder };
+        prodOrderDetails = {
+          ...this.order.beverageProdOrder?.prodOrderDetails,
+          ...formValue.beverageProdOrder.prodOrderDetails,
+        };
+        productOrder = {
+          ...this.order.beverageProdOrder,
+          ...formValue.beverageProdOrder,
+        };
         updateProductOrder = (po) => {
-          return this.beverageOrderService.update(po.id, po)};
-        assignProductOrder = (order, po) => order.beverageProdOrder = po;
+          return this.beverageOrderService.update(po.id, po);
+        };
+        assignProductOrder = (order, po) => (order.beverageProdOrder = po);
         break;
-  
+
       default:
         console.error('Invalid order type:', orderType);
         return;
     }
-  
+
     if (!updateProductOrder) {
-      console.error('Product order service function not set for orderType:', orderType);
+      console.error(
+        'Product order service function not set for orderType:',
+        orderType
+      );
       return;
     }
-  
+
     this.customerService.getById(formValue.customer.id).subscribe({
       next: (customer) => {
-        this.shippingPlanService.update(updatedShippingPlan.id, updatedShippingPlan).subscribe({
-          next: (savedShippingPlan) => {
-            this.paymentDetailsService.update(updatedPaymentDetails.id, updatedPaymentDetails).subscribe({
-              next: (savedPaymentDetails) => {
-                updateProductOrder(productOrder).subscribe({
-                  next: (updatedProductOrder) => {
-                    const orderToUpdate: Order = {
-                      ...this.order,
-                      orderDate: formatToDateOnly(formValue.orderDate),
-                      orderStatus: formValue.orderStatus,
-                      customer: customer,
-                      shippingPlan: savedShippingPlan,
-                      paymentDetails: savedPaymentDetails,
-                      coconutWaterProdOrder: null as any,
-                      vinegarProdOrder: null as any,
-                      beverageProdOrder: null as any,
-                    };
-  
-                    assignProductOrder(orderToUpdate, updatedProductOrder);
-  
-                    this.orderService.update(orderToUpdate.id!, orderToUpdate).subscribe({
-                      next: () => this.resetForm(),
-                      error: (err) => console.error('Failed to update Order', err),
+        this.shippingPlanService
+          .update(updatedShippingPlan.id, updatedShippingPlan)
+          .subscribe({
+            next: (savedShippingPlan) => {
+              this.paymentDetailsService
+                .update(updatedPaymentDetails.id, updatedPaymentDetails)
+                .subscribe({
+                  next: (savedPaymentDetails) => {
+                    updateProdOrderDetails(prodOrderDetails).subscribe({
+                      next: (updatedProdOrderDetails) => {
+                        productOrder.prodOrderDetails = updatedProdOrderDetails;
+                        updateProductOrder(productOrder).subscribe({
+                          next: (updatedProductOrder) => {
+                            const orderToUpdate: Order = {
+                              ...this.order,
+                              orderDate: formatToDateOnly(formValue.orderDate),
+                              orderStatus: formValue.orderStatus,
+                              customer: customer,
+                              shippingPlan: savedShippingPlan,
+                              paymentDetails: savedPaymentDetails,
+                              coconutWaterProdOrder: null as any,
+                              vinegarProdOrder: null as any,
+                              beverageProdOrder: null as any,
+                            };
+
+                            assignProductOrder(
+                              orderToUpdate,
+                              updatedProductOrder
+                            );
+
+                            this.orderService
+                              .update(orderToUpdate.id!, orderToUpdate)
+                              .subscribe({
+                                next: () => this.resetForm(),
+                                error: (err) =>
+                                  console.error('Failed to update Order', err),
+                              });
+                          },
+                          error: (err) =>
+                            console.error(
+                              'Failed to update Product Order',
+                              err
+                            ),
+                        });
+                      },
+                      error: (err) =>
+                        console.error('Failed to update ProdOrderDetails', err),
                     });
                   },
-                  error: (err) => console.error('Failed to update Product Order', err),
+                  error: (err) =>
+                    console.error('Failed to update PaymentDetails', err),
                 });
-              },
-              error: (err) => console.error('Failed to update PaymentDetails', err),
-            });
-          },
-          error: (err) => console.error('Failed to update ShippingPlan', err),
-        });
+            },
+            error: (err) => console.error('Failed to update ShippingPlan', err),
+          });
       },
       error: (err) => console.error('Failed to fetch Customer by ID', err),
     });
   }
-  
 
   resetForm() {
     this.order = this.initEmptyOrder();
@@ -768,6 +849,100 @@ export class OrderFormComponent {
     this.orderService.triggerRefresh();
     this.orderService.clearSelectedOrder();
     this.router.navigate(['admin/dashboard/order/list']);
+  }
+
+  private getProductOrderControlName(orderType: string): string {
+    switch (orderType) {
+      case 'CoconutWaterProdOrder':
+        return 'coconutWaterProdOrder';
+      case 'VinegarProdOrder':
+        return 'vinegarProdOrder';
+      case 'BeverageProdOrder':
+        return 'beverageProdOrder';
+      default:
+        return '';
+    }
+  }
+
+  setOrderType(type: string): void {
+    this.orderForm.removeControl('coconutWaterProdOrder');
+    this.orderForm.removeControl('vinegarProdOrder');
+    this.orderForm.removeControl('beverageProdOrder');
+
+    switch (type) {
+      case 'CoconutWaterProdOrder':
+        this.orderForm.addControl(
+          'coconutWaterProdOrder',
+          this.initCoconutWaterProdOrderForm()
+        );
+        break;
+      case 'VinegarProdOrder':
+        this.orderForm.addControl(
+          'vinegarProdOrder',
+          this.initVinegarProdOrderForm()
+        );
+        break;
+      case 'BeverageProdOrder':
+        this.orderForm.addControl(
+          'beverageProdOrder',
+          this.initBeverageProdOrderForm()
+        );
+        break;
+    }
+  }
+
+  getFormErrors(
+    form: FormGroup = this.orderForm,
+    parentKey: string = ''
+  ): string[] {
+    const errors: string[] = [];
+
+    const orderType = this.orderForm.get('orderType')?.value;
+
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+
+      if (
+        [
+          'coconutWaterProdOrder',
+          'vinegarProdOrder',
+          'beverageProdOrder',
+        ].includes(key) &&
+        key !== this.getProductOrderControlName(orderType)
+      ) {
+        return;
+      }
+
+      if (control instanceof FormGroup) {
+        errors.push(...this.getFormErrors(control, controlPath));
+      } else if (
+        control &&
+        control.invalid &&
+        (control.dirty || control.touched)
+      ) {
+        const controlErrors = control.errors;
+        if (controlErrors) {
+          Object.keys(controlErrors).forEach((errorKey) => {
+            errors.push(`${this.formatFieldName(controlPath)}: ${errorKey}`);
+          });
+        }
+      }
+    });
+
+    return errors;
+  }
+
+  private formatFieldName(fieldPath: string): string {
+    return fieldPath
+      .split('.')
+      .map((part) =>
+        part
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, (str) => str.toUpperCase())
+          .trim()
+      )
+      .join(' > ');
   }
 
   get coconutWaterProdOrderForm(): FormGroup {

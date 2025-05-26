@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Agent } from '../../features/agent/models/agent.model';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AuthService {
 
   private baseUrl = environment.apiUrl + '/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getCurrentUser(): { username: string; token: string } | null {
     const userJson = localStorage.getItem('user');
@@ -59,5 +60,10 @@ export class AuthService {
       headers,
       responseType: 'text'
     });
+  }
+
+  logout(): void {
+    localStorage.removeItem('user');
+    this.router.navigate(['/login']);
   }
 }

@@ -1,6 +1,14 @@
 <div class="container mt-4">
   <h5 class="mb-4">{{ isEditMode ? "Edit Order" : "Add Order" }}</h5>
   <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+    <div
+      *ngIf="getFormErrors().length > 0"
+      class="alert alert-danger p-2 mb-3 rounded"
+    >
+      <ul class="mb-0">
+        <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+      </ul>
+    </div>
     <div class="border p-3 mt-4">
       <div class="mb-3">
         <label class="form-label">Order Type</label>
@@ -296,7 +304,6 @@
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="orderForm.invalid"
       >
         {{ isEditMode ? "Update Order" : "Submit Order" }}
       </button>

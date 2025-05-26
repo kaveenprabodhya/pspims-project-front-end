@@ -36,7 +36,7 @@ export class BeverageIngredientsFormComponent {
   ) {
     this.ingredientForm = this.fb.group({
       ingredientName: ['', Validators.required],
-      measureAmount: [0, [Validators.required, Validators.min(0)]],
+      measureAmount: [null, [Validators.required, Validators.min(0)]],
       ingredientMeasure: ['', Validators.required],
       beverageType: [null, Validators.required],
     });
@@ -81,7 +81,7 @@ export class BeverageIngredientsFormComponent {
     return {
       id: '',
       ingredientName: '',
-      measureAmount: 0,
+      measureAmount: null as any,
       ingredientMeasure: '' as IngredientMeasure,
       beverageType: {} as BeverageType,
     };
@@ -109,7 +109,10 @@ export class BeverageIngredientsFormComponent {
   }
 
   onSubmit() {
-    if (this.ingredientForm.invalid) return;
+    if (this.ingredientForm.invalid) {
+      this.ingredientForm.markAllAsTouched();
+      return;
+    }
 
     this.ingredient = { ...this.ingredient, ...this.ingredientForm.value };
     
@@ -134,9 +137,6 @@ export class BeverageIngredientsFormComponent {
     }
 
     const updatedIngredient: BeverageIngredients = this.ingredientForm.value;
-
-    console.log(updatedIngredient);
-    
 
     this.ingredientService
       .update(this.ingredient.id, updatedIngredient)
@@ -180,4 +180,40 @@ export class BeverageIngredientsFormComponent {
       }
     });
   }
+
+  getFormErrors(): string[] {
+    const errors: string[] = [];
+  
+    const controls = this.ingredientForm.controls;
+  
+    if (controls['ingredientName']?.touched && controls['ingredientName']?.errors) {
+      if (controls['ingredientName'].errors['required']) {
+        errors.push('Ingredient name is required.');
+      }
+    }
+  
+    if (controls['measureAmount']?.touched && controls['measureAmount']?.errors) {
+      if (controls['measureAmount'].errors['required']) {
+        errors.push('Measure amount is required.');
+      }
+      if (controls['measureAmount'].errors['min']) {
+        errors.push('Measure amount must be 0 or greater.');
+      }
+    }
+  
+    if (controls['ingredientMeasure']?.touched && controls['ingredientMeasure']?.errors) {
+      if (controls['ingredientMeasure'].errors['required']) {
+        errors.push('Ingredient measure is required.');
+      }
+    }
+  
+    if (controls['beverageType']?.touched && controls['beverageType']?.errors) {
+      if (controls['beverageType'].errors['required']) {
+        errors.push('Beverage type is required.');
+      }
+    }
+  
+    return errors;
+  }
+  
 }

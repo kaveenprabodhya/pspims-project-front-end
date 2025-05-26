@@ -60,10 +60,20 @@ export class DeliveryVehicleListComponent {
 
   onDelete(vehicle: DeliveryVehicle): void {
     if (confirm(`Are you sure you want to delete vehicle ${vehicle.vehicleRegNo}?`)) {
-      this.deliveryVehicleService.delete(vehicle.id!).subscribe(() => {
-        this.deliveryVehicles = this.deliveryVehicles.filter(v => v.id !== vehicle.id);
+      this.deliveryVehicleService.delete(vehicle.id!).subscribe({
+        next: () => {
+          this.deliveryVehicles = this.deliveryVehicles.filter(v => v.id !== vehicle.id);
+          this.deliveryVehicleService.triggerRefresh();
+        },
+        error: (err) => {
+          if (err.status === 409) {
+            alert('Cannot delete: This vehicle is assigned to one or more shipping plans.');
+          } else {
+            alert('An error occurred while deleting the vehicle.');
+          }
+        }
       });
-      this.deliveryVehicleService.triggerRefresh();
     }
   }
+  
 }

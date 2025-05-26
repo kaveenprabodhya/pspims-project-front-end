@@ -1,6 +1,14 @@
 <div class="container mt-4">
   <h5>{{ isEditMode ? 'Edit Supplier' : 'Add Supplier' }}</h5>
     <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
+      <div
+      *ngIf="getFormErrors().length > 0"
+      class="alert alert-danger p-2 mb-3 rounded"
+    >
+      <ul class="mb-0">
+        <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+      </ul>
+    </div>
       <div class="mb-3">
         <label class="form-label">First Name</label>
         <input formControlName="firstName" type="text" class="form-control" />
@@ -41,7 +49,7 @@
         </select>
       </div>
   
-      <button type="submit" class="btn btn-primary" [disabled]="supplierForm.invalid">
+      <button type="submit" class="btn btn-primary">
         {{ isEditMode ? 'Update Supplier' : 'Add Supplier' }}
       </button>
     </form>

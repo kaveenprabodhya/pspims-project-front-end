@@ -1,6 +1,15 @@
 <div class="container mt-4">
   <h5 class="mb-4">{{ isEditMode ? "Edit Copra Sale" : "Add Copra Sale" }}</h5>
   <form [formGroup]="copraSaleForm" (ngSubmit)="onSubmit()">
+    <div
+      *ngIf="getFormErrors().length > 0"
+      class="alert alert-danger p-2 mb-3 rounded"
+    >
+      <ul class="mb-0">
+        <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+      </ul>
+    </div>
+
     <div class="row">
       <div class="col-md-4">
         <label>Sale Quantity</label>
@@ -176,7 +185,7 @@
             placeholder="Tracking Number"
             readonly
           />
-        </div>        
+        </div>
 
         <div class="col-md-6 mt-2">
           <label class="form-label">Delivery Type</label>
@@ -192,9 +201,7 @@
           *ngIf="shippingPlanForm.get('deliveryType')?.value !== 'PICKUP'"
           class="col-md-6 mt-2"
         > -->
-        <div
-          class="col-md-6 mt-2"
-        >
+        <div class="col-md-6 mt-2">
           <label class="form-label">Delivery Vehicle</label>
           <select formControlName="deliveryVehicle" class="form-select">
             <option selected disabled [ngValue]="null">
@@ -261,11 +268,7 @@
     </div>
 
     <div class="mt-4">
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="copraSaleForm.invalid"
-      >
+      <button type="submit" class="btn btn-primary">
         {{ isEditMode ? "Update Copra Sale" : "Submit Copra Sale" }}
       </button>
     </div>

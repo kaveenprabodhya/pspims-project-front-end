@@ -1,6 +1,14 @@
 <div class="container mt-4">
     <h5 class="mb-4">{{ isEditMode ? "Edit Vehicle" : "Add Vehicle" }}</h5>
     <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+      <div
+      *ngIf="getFormErrors().length > 0"
+      class="alert alert-danger p-2 mb-3 rounded"
+    >
+      <ul class="mb-0">
+        <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+      </ul>
+    </div>
       <div class="mb-3">
         <label class="form-label">Vehicle Reg No</label>
         <input
@@ -30,7 +38,7 @@
         </select>
       </div>
   
-      <button class="btn btn-success" type="submit" [disabled]="vehicleForm.invalid">
+      <button class="btn btn-success" type="submit">
         {{ isEditMode ? "Update Vehicle" : "Add Vehicle" }}
       </button>
     </form>

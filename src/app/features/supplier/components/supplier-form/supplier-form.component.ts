@@ -96,14 +96,17 @@ export class SupplierFormComponent {
       address: '',
       supplierStatus: '' as SupplierStatusEnum,
       supplierPaymentTerms: '' as SupplierPaymentTermsEnum,
-      agent: {} as Agent,
-      supplierPaymentDetails: [],
-      coconutPurchase: [],
+      agent: null as any,
+      supplierPaymentDetails: null as any,
+      coconutPurchase: null as any,
     };
   }
 
   onSubmit() {
-    if (this.supplierForm.invalid) return;
+    if (this.supplierForm.invalid) {
+      this.supplierForm.markAllAsTouched();
+      return;
+    }
 
     if (this.isEditMode) {
       this.updateSupplier();
@@ -143,4 +146,56 @@ export class SupplierFormComponent {
     this.supplierService.clearSelectedSupplier();
     this.router.navigate(['admin/dashboard/supplier/list']);
   }
+
+  getFormErrors(form: FormGroup = this.supplierForm, parentKey: string = ''): string[] {
+    const errors: string[] = [];
+  
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = parentKey ? `${parentKey}.${key}` : key;
+  
+      if (control instanceof FormGroup) {
+        errors.push(...this.getFormErrors(control, controlPath));
+      } else if (control && control.invalid && (control.dirty || control.touched)) {
+        const controlErrors = control.errors;
+        if (controlErrors) {
+          Object.keys(controlErrors).forEach((errorKey) => {
+            const fieldName = this.formatFieldName(controlPath);
+            let message = `${fieldName}: ${errorKey}`;
+  
+            // Custom error messages
+            if (errorKey === 'required') {
+              message = `${fieldName} is required.`;
+            } else if (errorKey === 'email') {
+              message = `${fieldName} must be a valid email address.`;
+            } else if (errorKey === 'minlength') {
+              message = `${fieldName} is too short.`;
+            } else if (errorKey === 'maxlength') {
+              message = `${fieldName} is too long.`;
+            } else if (errorKey === 'pattern') {
+              message = `${fieldName} format is invalid.`;
+            }
+  
+            errors.push(message);
+          });
+        }
+      }
+    });
+  
+    return errors;
+  }
+   
+
+  private formatFieldName(fieldPath: string): string {
+    return fieldPath
+      .split('.')
+      .map(part =>
+        part
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, str => str.toUpperCase())
+          .trim()
+      )
+      .join(' > ');
+  }
+  
 }

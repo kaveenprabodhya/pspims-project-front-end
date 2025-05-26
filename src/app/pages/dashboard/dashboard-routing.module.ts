@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardPageComponent } from './dashboard-page/dashboard-page.component';
+import { authGuard } from '../../core/auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
+    canActivate: [authGuard],
     component: DashboardComponent,
     children: [
       {
