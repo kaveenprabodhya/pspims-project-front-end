@@ -1,0 +1,57 @@
+# Move this file to the root folder of the project and execute
+
+services:
+  mysql-container:
+    container_name: mysql-container
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: pspims
+      MYSQL_USER: springuser
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+
+  backend:
+    build:
+      context: ./pspims
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    # volumes:
+    #   - ./pspims:/app
+    depends_on:
+      - mysql-container
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build:
+      context: ./pspims-front-end
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./pspims-front-end/src:/app/src
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
